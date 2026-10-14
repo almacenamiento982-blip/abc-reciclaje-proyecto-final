@@ -19,3 +19,6 @@ token*.json
 Thumbs.db
 desktop.ini
 node_modules/
+
+# clasp (Apps Script local)
+.clasp.json

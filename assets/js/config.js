@@ -7,7 +7,7 @@ window.ABC_CONFIG = {
   // URL del Web App de Google Apps Script (termina en /exec).
   // Mientras esté vacía, el sitio funciona en MODO DEMOSTRACIÓN: los envíos se
   // guardan solo en el navegador y NO llegan a Google Drive.
-  APPS_SCRIPT_URL: "",
+  APPS_SCRIPT_URL: "https://script.google.com/macros/s/AKfycby-epPMyQ5z3oieq80_UhuteFj3S4GCznR-YVtVqtBnf9GJo983GwL2hxbrrsMrPwPJOg/exec",
 
   // Enlace opcional a un Google Form de respaldo (carga de archivos). Si se
   // configura, se ofrece cuando la subida falla repetidamente.
