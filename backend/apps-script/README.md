@@ -40,15 +40,19 @@ carpetas y hoja en esa cuenta y reemplazar los IDs.
 
 ## Cómo funciona la subida de videos
 
-1. El navegador envía los datos del formulario (`iniciar`). El script abre una **sesión de subida
-   reanudable** en la API de Drive dentro de la carpeta de videos, registra la fila en la hoja con
-   estado `Subiendo` y devuelve un `uploadId` y el radicado.
-2. El navegador parte el video en fragmentos de 8 MB, los codifica en base64 y los envía uno a uno
-   (`fragmento`). El script los decodifica y los reenvía a Drive con `Content-Range`.
-3. Al llegar el último fragmento Drive responde con el archivo creado; el script guarda el ID y el
-   enlace en la hoja y cambia el estado a `Recibido`. `finalizar` confirma y devuelve el radicado.
-4. Si se corta la conexión, el navegador guarda en qué fragmento iba (sessionStorage) y al volver a
-   seleccionar el mismo archivo continúa desde ahí. La sesión de Drive dura hasta 7 días.
+1. El navegador envía los datos del formulario y su origen (`iniciar`). El script abre una **sesión
+   de subida reanudable** en la API de Drive dentro de la carpeta de videos, con la cabecera
+   `Origin` del sitio para que Google acepte peticiones directas desde el navegador (CORS). Registra
+   la fila con estado `Subiendo` y devuelve `uploadId`, radicado y la URL de la sesión.
+2. **Vía directa:** el navegador hace `PUT` de bloques de 16 MB directamente a esa URL de Google con
+   `Content-Range`. Apps Script no interviene. Al terminar, Google devuelve el ID del archivo.
+3. **Vía de relevo (respaldo):** si el navegador no puede conectar con Google, parte el video en
+   fragmentos de 8 MB en base64 y los envía a `fragmento`; el script los reenvía a la misma sesión.
+4. `finalizar` recibe el ID (vía directa) y verifica que el archivo esté en la carpeta de videos con
+   el nombre de la sesión; o consulta la sesión (vía relevo). Guarda ID y enlace en la hoja y pone
+   `Recibido`. `estado_subida` permite reanudar: devuelve cuántos bytes tiene Drive.
+5. Si se corta la conexión, el navegador guarda el avance (sessionStorage) y al volver a seleccionar
+   el mismo archivo continúa desde ahí. La sesión de Drive dura hasta 7 días.
 
 ## Límites a tener en cuenta (cuenta Gmail gratuita)
 

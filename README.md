@@ -21,7 +21,7 @@ registro en **Google Sheets**.
 | `envio.html` | Estudiante | Paso 2: formulario con validaciones, carga del video por fragmentos con barra de progreso y reanudación, o envío por enlace. Entrega un **radicado**. |
 | `calificacion.html` | Estudiante | Paso 3: consulta por número de documento del estado, la nota y la retroalimentación. |
 | `arboles.html` | Todos | Muro tipo Padlet + mapa (Leaflet/OpenStreetMap) con los árboles sembrados, y formulario para registrar el propio (foto comprimida en el navegador, ubicación opcional). |
-| `docentes.html` | Docentes | Panel con clave: lista de entregas, filtros, enlace al video en Drive, calificación con retroalimentación, moderación del muro y descarga CSV. |
+| `docentes.html` | Docentes | Panel con clave: lista de entregas, filtros, enlace al video en Drive, calificación con retroalimentación, eliminación de entregas (el video va a la papelera de Drive), moderación y eliminación en el muro, y descarga CSV. |
 
 Todo es HTML, CSS y JavaScript sin dependencias ni paso de compilación, para que cualquier
 persona pueda editarlo y publicarlo en GitHub Pages.
@@ -44,9 +44,12 @@ assets/js/api.js ──POST JSON──▶ Google Apps Script (Web App, cuenta al
 - **Sin servidor propio ni costos.** El único "backend" es un script de Google que corre dentro
   de la cuenta dueña del almacenamiento (5 TB). Ninguna credencial sale de Google; el sitio
   público solo conoce la URL del script, igual que conocería la URL de un Google Form.
-- **Videos grandes.** El navegador parte el video en fragmentos de 8 MB y el script los reenvía a
-  una *sesión de subida reanudable* de Drive. Así se superan los límites de Apps Script y, si se
-  cae la conexión, la subida continúa donde iba.
+- **Videos grandes, a velocidad real.** El script abre una *sesión de subida reanudable* en Drive
+  autorizada para el dominio del sitio y el navegador envía los bytes **directamente a Google** en
+  bloques de 16 MB (20 MB en ~11 s en la prueba). Apps Script no toca los bytes; solo confirma al
+  final que el archivo quedó en la carpeta con el nombre esperado. Si la red del estudiante bloquea
+  la conexión directa, el sitio cambia solo a la vía de relevo (fragmentos de 8 MB vía Apps Script,
+  más lenta). En ambos casos, si se cae la conexión la subida continúa donde iba.
 - **Modo demostración.** Mientras `APPS_SCRIPT_URL` esté vacía en `assets/js/config.js`, el sitio
   lo indica con una etiqueta amarilla y guarda todo solo en el navegador. Nunca simula que algo
   llegó a Drive.
@@ -82,9 +85,10 @@ paso 3 lee la hoja.
 - Muro de árboles: foto de 2400×1800 px reducida a 1600×1200 (≈17 KB), registro publicado,
   contador y mapa actualizados (4 marcadores).
 - **Con el backend real (sitio publicado):** `ping`, `arboles` y `consultar` responden JSON; envío de un
-  MP4 de 20,6 MB en 3 fragmentos (≈70 s), radicado `ABC-2026-00001`; archivo en Drive con el mismo
-  MD5 y tamaño que el original; fila completa en la hoja; calificación 4,5 guardada desde el panel
-  docente y mostrada al estudiante en el paso 3.
+  MP4 de 20,6 MB por relevo (≈70 s) y después por **subida directa (11 s)**; en ambos casos el archivo
+  en Drive tiene el mismo MD5 y tamaño que el original; fila completa en la hoja; calificación 4,5
+  guardada desde el panel docente y mostrada al estudiante en el paso 3; eliminación desde el panel
+  borra la fila y manda el video a la papelera de Drive.
 
 ## 5. Estado de cada funcionalidad
 
@@ -102,7 +106,7 @@ paso 3 lee la hoja.
 ## 6. Backend publicado
 
 - Proyecto de Apps Script: `ABC Reciclaje - Entregas Proyecto Final` (dentro de la carpeta del proyecto en Drive).
-- Implementación activa: `v1 - prototipo`. La URL `/exec` está en `assets/js/config.js`.
+- Implementación activa: `v2 - subida directa y eliminar` (misma URL que la v1). La URL `/exec` está en `assets/js/config.js`.
 - La clave del panel docente se generó al ejecutar `configurar()` y está en *Configuración del proyecto → Propiedades del script → `DOCENTE_CLAVE`*. Compártela solo con el equipo docente.
 - Para publicar cambios del script: editar `backend/apps-script/Code.gs` y ejecutar
   `npx @google/clasp push -f` y luego `npx @google/clasp deploy -i <deploymentId> -d "v2"` desde esa carpeta
