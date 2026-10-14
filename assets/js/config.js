@@ -14,7 +14,7 @@ window.ABC_CONFIG = {
   FORM_RESPALDO_URL: "",
 
   // Logo opcional de la organización (ruta relativa o URL). Vacío = no se muestra.
-  LOGO_URL: "",
+  LOGO_URL: "assets/img/logo-fimlm.png",
 
   // Nombre del curso y de la organización (textos visibles).
   CURSO: "El ABC del Reciclaje",

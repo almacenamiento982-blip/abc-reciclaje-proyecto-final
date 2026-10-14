@@ -29,8 +29,8 @@
       <div class="contenedor">
         <div class="cabecera__barra">
           <a class="marca" href="index.html" aria-label="${escapar(C.CURSO)} · Inicio">
-            ${C.LOGO_URL ? `<img class="marca__logo" src="${escapar(C.LOGO_URL)}" alt="">` : ""}
             <span class="marca__wordmark"><span class="camp">CAMP</span><span class="us">US</span></span>
+            ${C.LOGO_URL ? `<img class="marca__logo" src="${escapar(C.LOGO_URL)}" alt="Fundación Internacional María Luisa de Moreno">` : ""}
             <span class="marca__sep" aria-hidden="true"></span>
             <span class="marca__curso"><small>Curso</small>${escapar(C.CURSO)}</span>
           </a>
@@ -56,7 +56,7 @@
     if (!cont) return;
     cont.innerHTML = `
       <div class="contenedor pie-pagina__filas">
-        <span>${escapar(C.CURSO)} · ${escapar(C.ORGANIZACION)}</span>
+        <span class="pie-pagina__marca"><img src="assets/img/logo-fimlm.png" alt="" width="36" height="36">${escapar(C.CURSO)} · ${escapar(C.ORGANIZACION)}</span>
         <span><a href="docentes.html">Panel docente</a> · Prototipo v${escapar(C.VERSION)}</span>
       </div>`;
   }

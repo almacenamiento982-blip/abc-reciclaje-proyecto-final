@@ -118,6 +118,7 @@ main { flex: 1; }
 @media (max-width: 520px) {
   .marca { gap: 8px; }
   .marca__wordmark { font-size: 1.1rem; }
+  .marca__logo { width: 34px; height: 34px; }
   .marca__curso { font-size: 0.66rem; }
   .chip { font-size: 0.72rem; padding: 3px 8px; white-space: nowrap; }
   .chip__largo { display: none; }
@@ -134,7 +135,9 @@ main { flex: 1; }
   letter-spacing: 0.06em; line-height: 1.1; opacity: 0.95;
 }
 .marca__curso small { display: block; font-weight: 500; letter-spacing: 0.08em; font-size: 0.62rem; opacity: 0.85; }
-.marca__logo { width: 34px; height: 34px; border-radius: 50%; background: var(--blanco); object-fit: contain; }
+.marca__logo { width: 42px; height: 42px; object-fit: contain; }
+.pie-pagina__marca { display: inline-flex; align-items: center; gap: 10px; }
+.pie-pagina__marca img { border-radius: 50%; background: var(--blanco); }
 
 .nav { display: none; }
 .nav__lista { list-style: none; margin: 0; padding: 0; display: flex; gap: 4px; }
