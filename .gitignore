@@ -1,0 +1,21 @@
+# Material privado del proyecto (audios, capturas) nunca va al repositorio público
+*.ogg
+*.opus
+*.m4a
+*.mp3
+*.mp4
+*.mov
+
+# Entornos y secretos
+.env
+.env.*
+*.key
+*.pem
+credentials*.json
+token*.json
+
+# Sistema
+.DS_Store
+Thumbs.db
+desktop.ini
+node_modules/

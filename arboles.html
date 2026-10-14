@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Árboles sembrados · El ABC del Reciclaje</title>
+  <meta name="description" content="Muro y mapa con los árboles sembrados por los estudiantes del curso.">
+  <link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700;800&family=Nunito+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css" crossorigin="">
+  <link rel="stylesheet" href="assets/css/styles.css">
+</head>
+<body>
+  <a class="salto-contenido" href="#contenido">Ir al contenido</a>
+  <header class="cabecera" data-cabecera></header>
+
+  <main id="contenido">
+    <section class="heroe">
+      <div class="contenedor">
+        <div class="heroe__marco">
+          <div>
+            <span class="heroe__sobretitulo">🧤 Los guantes · reto extra</span>
+            <h1>Árboles sembrados</h1>
+            <p>Cada árbol que sembramos es una prenda más del traje. Mira dónde están creciendo los árboles del curso y suma el tuyo.</p>
+            <div class="heroe__acciones">
+              <a class="btn btn--acento" href="#registrar">Registrar mi árbol</a>
+            </div>
+          </div>
+          <div class="contador" style="justify-content:flex-end">
+            <div class="contador__item"><strong id="cont-arboles">–</strong><span>árboles sembrados</span></div>
+            <div class="contador__item"><strong id="cont-paises">–</strong><span>países</span></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="seccion">
+      <div class="contenedor" style="display:grid;gap:24px">
+        <div data-aviso-modo></div>
+        <div>
+          <h2>Mapa</h2>
+          <div class="mapa" id="mapa" role="region" aria-label="Mapa de árboles sembrados"></div>
+        </div>
+        <div>
+          <h2>Muro</h2>
+          <div class="galeria" id="galeria" aria-live="polite"><p class="texto-suave">Cargando…</p></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="seccion" id="registrar" style="padding-top:0">
+      <div class="contenedor seccion--estrecha">
+        <form class="tarjeta tarjeta--destacada formulario" id="form-arbol" novalidate>
+          <h2 class="mb-0">Registrar mi árbol</h2>
+          <p class="texto-suave mb-0">Sube una foto de tu árbol. Aparecerá en el muro con tu nombre, ciudad y mensaje.</p>
+
+          <div class="campo--fila">
+            <div class="campo">
+              <label for="a-nombre">Nombre <span class="obligatorio">*</span></label>
+              <input type="text" id="a-nombre" maxlength="120" autocomplete="name" required>
+              <p class="error" aria-live="polite"></p>
+            </div>
+            <div class="campo">
+              <label for="a-documento">Número de documento <span class="obligatorio">*</span></label>
+              <input type="text" id="a-documento" inputmode="numeric" maxlength="20" required>
+              <p class="ayuda">No se muestra en el muro; sirve para asociar el árbol con tu curso.</p>
+              <p class="error" aria-live="polite"></p>
+            </div>
+          </div>
+          <div class="campo--fila">
+            <div class="campo">
+              <label for="a-ciudad">Ciudad o municipio <span class="obligatorio">*</span></label>
+              <input type="text" id="a-ciudad" maxlength="80" required>
+              <p class="error" aria-live="polite"></p>
+            </div>
+            <div class="campo">
+              <label for="a-pais">País <span class="obligatorio">*</span></label>
+              <select id="a-pais" required></select>
+              <p class="error" aria-live="polite"></p>
+            </div>
+          </div>
+          <div class="campo">
+            <label for="a-mensaje">Mensaje <span class="texto-suave">(opcional)</span></label>
+            <textarea id="a-mensaje" maxlength="280" placeholder="¿Qué árbol sembraste y con quién?"></textarea>
+            <p class="error" aria-live="polite"></p>
+          </div>
+          <div class="campo">
+            <span class="etiqueta">Ubicación en el mapa</span>
+            <div class="acciones">
+              <button type="button" class="btn btn--secundario btn--pequeno" id="btn-ubicacion">📍 Usar mi ubicación actual</button>
+              <span class="texto-suave" id="ubicacion-texto" style="font-size:.86rem">Si no la compartes, ubicaremos tu árbol por país.</span>
+            </div>
+          </div>
+          <div class="campo">
+            <label class="zona-archivo" id="zona-foto" for="a-foto">
+              <input type="file" id="a-foto" accept="image/*">
+              <div class="zona-archivo__icono">🌳</div>
+              <strong>Toca aquí para elegir la foto</strong>
+              <span>JPG o PNG · la reducimos automáticamente antes de enviarla</span>
+            </label>
+            <img id="foto-previa" alt="Vista previa de la foto" hidden style="border-radius:12px;margin-top:10px;max-height:260px">
+            <p class="error" aria-live="polite"></p>
+          </div>
+          <div class="campo campo--check">
+            <input type="checkbox" id="a-autoriza">
+            <div>
+              <label for="a-autoriza">Autorizo que la foto, mi nombre, ciudad y mensaje se muestren públicamente en el muro. <span class="obligatorio">*</span></label>
+              <p class="error" aria-live="polite"></p>
+            </div>
+          </div>
+          <div class="acciones">
+            <button type="submit" class="btn btn--acento" id="btn-arbol">Publicar en el muro</button>
+          </div>
+          <div id="arbol-resultado"></div>
+        </form>
+      </div>
+    </section>
+  </main>
+
+  <footer class="pie-pagina" data-pie></footer>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js" crossorigin=""></script>
+  <script src="assets/js/config.js"></script>
+  <script src="assets/js/demo-store.js"></script>
+  <script src="assets/js/api.js"></script>
+  <script src="assets/js/ui.js"></script>
+  <script src="assets/js/upload.js"></script>
+  <script src="assets/js/pages/arboles.js"></script>
+</body>
+</html>

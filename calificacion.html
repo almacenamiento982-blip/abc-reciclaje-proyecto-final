@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Mi calificación · Proyecto Final · El ABC del Reciclaje</title>
+  <meta name="description" content="Consulta el estado, la nota y la retroalimentación de tu proyecto final.">
+  <link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700;800&family=Nunito+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/styles.css">
+</head>
+<body>
+  <a class="salto-contenido" href="#contenido">Ir al contenido</a>
+  <header class="cabecera" data-cabecera></header>
+
+  <main id="contenido">
+    <section class="heroe">
+      <div class="contenedor">
+        <div class="heroe__marco" style="grid-template-columns:1fr">
+          <div>
+            <span class="heroe__sobretitulo">Paso 3 de 3</span>
+            <h1>Mi calificación</h1>
+            <p>Escribe tu número de documento para ver el estado de tu entrega y la retroalimentación de tus profesores.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="seccion">
+      <div class="contenedor seccion--estrecha" style="display:grid;gap:20px">
+        <form class="tarjeta formulario" id="form-consulta" novalidate>
+          <div class="campo--fila">
+            <div class="campo">
+              <label for="documento">Número de documento <span class="obligatorio">*</span></label>
+              <input type="text" id="documento" inputmode="numeric" maxlength="20" required>
+              <p class="error" aria-live="polite"></p>
+            </div>
+            <div class="campo">
+              <label for="correo">Correo <span class="texto-suave">(opcional, para mayor seguridad)</span></label>
+              <input type="email" id="correo" maxlength="120">
+              <p class="error" aria-live="polite"></p>
+            </div>
+          </div>
+          <div class="acciones">
+            <button type="submit" class="btn btn--primario" id="btn-consultar">Consultar</button>
+            <span class="texto-suave" style="font-size:.86rem">En modo demostración prueba con el documento <strong>1000</strong>.</span>
+          </div>
+        </form>
+
+        <div id="resultados" aria-live="polite"></div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="pie-pagina" data-pie></footer>
+
+  <script src="assets/js/config.js"></script>
+  <script src="assets/js/demo-store.js"></script>
+  <script src="assets/js/api.js"></script>
+  <script src="assets/js/ui.js"></script>
+  <script src="assets/js/pages/calificacion.js"></script>
+</body>
+</html>

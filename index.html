@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Proyecto Final · El ABC del Reciclaje</title>
+  <meta name="description" content="Entrega del video del proyecto final del curso El ABC del Reciclaje: instructivo, envío y consulta de calificación.">
+  <link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700;800&family=Nunito+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/styles.css">
+</head>
+<body>
+  <a class="salto-contenido" href="#contenido">Ir al contenido</a>
+  <header class="cabecera" data-cabecera></header>
+
+  <main id="contenido">
+    <section class="heroe">
+      <div class="contenedor">
+        <div class="heroe__marco">
+          <div>
+            <span class="heroe__sobretitulo">Curso · Proyecto final</span>
+            <h1>El ABC del<br>Reciclaje</h1>
+            <p>Llegó el momento de mostrar lo aprendido. Graba tu video de 2 a 3 minutos, envíalo desde aquí y consulta la retroalimentación de tus profesores en el mismo lugar.</p>
+            <div class="heroe__acciones">
+              <a class="btn btn--acento" href="envio.html">Enviar mi video</a>
+              <a class="btn btn--contorno" href="instructivo.html">Leer el instructivo</a>
+            </div>
+          </div>
+          <img class="heroe__icono" src="assets/img/reciclaje.svg" alt="">
+        </div>
+      </div>
+    </section>
+
+    <section class="seccion">
+      <div class="contenedor">
+        <div data-aviso-modo></div>
+        <div data-fecha-limite></div>
+        <h2 class="texto-centro">Tres pasos para completar tu proyecto</h2>
+        <p class="texto-centro texto-suave mb-2">El mismo recorrido que ves en Campus, en una sola herramienta.</p>
+        <div class="rejilla rejilla--3">
+          <a class="tarjeta paso" href="instructivo.html">
+            <span class="paso__numero">1</span>
+            <h3>Instructivo</h3>
+            <p>Qué debe tener tu video, cómo grabarlo y qué necesitas tener a la mano antes de enviarlo.</p>
+            <span class="paso__cta">Ver instructivo →</span>
+          </a>
+          <a class="tarjeta paso" href="envio.html">
+            <span class="paso__numero paso__numero--acento">2</span>
+            <h3>Envío del video</h3>
+            <p>Carga el archivo directamente desde tu celular o computador. Recibes un número de radicado como constancia.</p>
+            <span class="paso__cta">Enviar ahora →</span>
+          </a>
+          <a class="tarjeta paso" href="calificacion.html">
+            <span class="paso__numero paso__numero--azul">3</span>
+            <h3>Calificación</h3>
+            <p>Consulta con tu número de documento el estado de tu entrega, la nota y la retroalimentación de tus profesores.</p>
+            <span class="paso__cta">Consultar →</span>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <section class="seccion" style="padding-top:0">
+      <div class="contenedor">
+        <div class="tarjeta tarjeta--verde" style="display:grid;gap:16px;grid-template-columns:1fr;align-items:center">
+          <div>
+            <span class="chip chip--demo" style="margin-bottom:8px">🧤 Los guantes · reto extra</span>
+            <h2>Muro de árboles sembrados</h2>
+            <p style="margin:0;opacity:.92">¿Ya sembraste tu árbol? Comparte la foto y el lugar. Todos los árboles del curso se ven juntos en un muro y en un mapa, como un Padlet.</p>
+          </div>
+          <div class="acciones">
+            <a class="btn btn--acento" href="arboles.html">Ver el muro de árboles</a>
+            <a class="btn btn--contorno" href="arboles.html#registrar">Registrar mi árbol</a>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="pie-pagina" data-pie></footer>
+
+  <script src="assets/js/config.js"></script>
+  <script src="assets/js/demo-store.js"></script>
+  <script src="assets/js/api.js"></script>
+  <script src="assets/js/ui.js"></script>
+  <script>
+    (async function () {
+      const estado = await UI.iniciarPagina("inicio");
+      const C = window.ABC_CONFIG;
+      const aviso = document.querySelector("[data-aviso-modo]");
+      if (estado.modo === "demo") {
+        aviso.innerHTML = '<div class="aviso aviso--alerta mb-2"><span class="aviso__icono">🧪</span><div><p><strong>Modo demostración.</strong> Puedes probar todo el recorrido, pero los envíos se guardan únicamente en este navegador y <strong>no llegan a Google Drive</strong>. Para activar el almacenamiento real hay que publicar el script de Google y pegar su URL en <code>assets/js/config.js</code>.</p></div></div>';
+      } else if (estado.modo === "error") {
+        aviso.innerHTML = '<div class="aviso aviso--error mb-2"><span class="aviso__icono">⚠️</span><div><p><strong>No se pudo contactar el servidor de envíos.</strong> Puedes leer el instructivo; intenta enviar más tarde.</p></div></div>';
+      }
+      if (C.FECHA_LIMITE) {
+        const f = new Date(C.FECHA_LIMITE);
+        if (!isNaN(f)) {
+          document.querySelector("[data-fecha-limite]").innerHTML =
+            '<div class="aviso aviso--info mb-2"><span class="aviso__icono">📅</span><div><p><strong>Fecha límite de entrega:</strong> ' +
+            f.toLocaleDateString("es-CO", { weekday: "long", year: "numeric", month: "long", day: "numeric" }) + '.</p></div></div>';
+        }
+      }
+    })();
+  </script>
+</body>
+</html>

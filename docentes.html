@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Panel docente · El ABC del Reciclaje</title>
+  <meta name="robots" content="noindex">
+  <link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700;800&family=Nunito+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/styles.css">
+</head>
+<body>
+  <a class="salto-contenido" href="#contenido">Ir al contenido</a>
+  <header class="cabecera" data-cabecera></header>
+
+  <main id="contenido">
+    <section class="heroe">
+      <div class="contenedor">
+        <div class="heroe__marco" style="grid-template-columns:1fr">
+          <div>
+            <span class="heroe__sobretitulo">Equipo docente</span>
+            <h1>Panel de calificación</h1>
+            <p>Revisa las entregas, abre cada video y registra la nota y la retroalimentación. Lo que escribas aquí es lo que el estudiante ve en el paso 3.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="seccion">
+      <div class="contenedor" style="display:grid;gap:20px">
+        <form class="tarjeta formulario seccion--estrecha" id="form-clave" novalidate style="width:100%">
+          <div class="campo--fila">
+            <div class="campo">
+              <label for="clave">Clave del equipo docente</label>
+              <input type="password" id="clave" autocomplete="current-password" required>
+              <p class="error" aria-live="polite"></p>
+            </div>
+            <div class="campo">
+              <label for="docente">Tu nombre (aparece en la calificación)</label>
+              <input type="text" id="docente" maxlength="80">
+              <p class="error" aria-live="polite"></p>
+            </div>
+          </div>
+          <div class="acciones">
+            <button type="submit" class="btn btn--primario" id="btn-entrar">Entrar</button>
+            <span class="texto-suave" id="clave-ayuda" style="font-size:.86rem"></span>
+          </div>
+        </form>
+
+        <div id="panel" hidden style="display:grid;gap:20px">
+          <div class="contador">
+            <div class="contador__item"><strong id="c-total">0</strong><span>entregas</span></div>
+            <div class="contador__item"><strong id="c-pendientes">0</strong><span>por calificar</span></div>
+            <div class="contador__item"><strong id="c-calificadas">0</strong><span>calificadas</span></div>
+          </div>
+
+          <div class="tarjeta">
+            <h2>Entregas</h2>
+            <div class="filtros mb-2">
+              <div class="campo"><label for="f-texto">Buscar</label><input type="text" id="f-texto" placeholder="Nombre, documento, radicado o título"></div>
+              <div class="campo"><label for="f-estado">Estado</label><select id="f-estado"><option value="">Todos</option><option>Recibido</option><option>En revisión</option><option>Calificado</option><option>Devuelto</option></select></div>
+              <div class="campo"><label for="f-zona">Zona</label><select id="f-zona"><option value="">Todas</option></select></div>
+              <div class="acciones"><button type="button" class="btn btn--secundario" id="btn-csv">Descargar CSV</button><button type="button" class="btn btn--secundario" id="btn-recargar">Actualizar</button></div>
+            </div>
+            <div class="tabla-contenedor">
+              <table class="tabla">
+                <thead><tr><th>Radicado</th><th>Estudiante</th><th>Zona · País</th><th>Video</th><th>Estado</th><th>Nota</th><th></th></tr></thead>
+                <tbody id="tabla-entregas"></tbody>
+              </table>
+            </div>
+          </div>
+
+          <div class="tarjeta">
+            <h2>Árboles registrados</h2>
+            <p class="texto-suave">Puedes ocultar del muro cualquier registro inapropiado.</p>
+            <div class="tabla-contenedor">
+              <table class="tabla">
+                <thead><tr><th>ID</th><th>Nombre</th><th>Lugar</th><th>Mensaje</th><th>Visible</th><th></th></tr></thead>
+                <tbody id="tabla-arboles"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <div class="modal" id="modal" hidden role="dialog" aria-modal="true" aria-labelledby="modal-titulo">
+    <form class="modal__caja formulario" id="form-calificar" novalidate>
+      <div class="modal__cabecera">
+        <div><h2 id="modal-titulo" class="mb-0">Calificar</h2><p class="texto-suave mb-0" id="modal-sub"></p></div>
+        <button type="button" class="modal__cerrar" id="modal-cerrar" aria-label="Cerrar">×</button>
+      </div>
+      <div id="modal-video"></div>
+      <div class="campo--fila">
+        <div class="campo">
+          <label for="m-nota">Nota (<span id="m-escala"></span>)</label>
+          <input type="number" id="m-nota" step="0.1" inputmode="decimal">
+          <p class="error" aria-live="polite"></p>
+        </div>
+        <div class="campo">
+          <label for="m-estado">Estado</label>
+          <select id="m-estado"><option>Calificado</option><option>En revisión</option><option>Devuelto</option></select>
+          <p class="error" aria-live="polite"></p>
+        </div>
+      </div>
+      <div class="campo">
+        <label for="m-retro">Retroalimentación para el estudiante</label>
+        <textarea id="m-retro" maxlength="2000" style="min-height:140px"></textarea>
+        <p class="error" aria-live="polite"></p>
+      </div>
+      <div class="acciones">
+        <button type="submit" class="btn btn--primario" id="m-guardar">Guardar calificación</button>
+        <button type="button" class="btn btn--secundario" id="m-cancelar">Cancelar</button>
+      </div>
+    </form>
+  </div>
+
+  <footer class="pie-pagina" data-pie></footer>
+
+  <script src="assets/js/config.js"></script>
+  <script src="assets/js/demo-store.js"></script>
+  <script src="assets/js/api.js"></script>
+  <script src="assets/js/ui.js"></script>
+  <script src="assets/js/pages/docentes.js"></script>
+</body>
+</html>

@@ -1,0 +1,203 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Enviar mi video · Proyecto Final · El ABC del Reciclaje</title>
+  <meta name="description" content="Formulario de envío del video del proyecto final.">
+  <link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700;800&family=Nunito+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/styles.css">
+</head>
+<body>
+  <a class="salto-contenido" href="#contenido">Ir al contenido</a>
+  <header class="cabecera" data-cabecera></header>
+
+  <main id="contenido">
+    <section class="heroe">
+      <div class="contenedor">
+        <div class="heroe__marco" style="grid-template-columns:1fr">
+          <div>
+            <span class="heroe__sobretitulo">Paso 2 de 3</span>
+            <h1>Envía tu video</h1>
+            <p>Llena tus datos y carga el archivo. Al terminar recibirás un número de radicado.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="seccion">
+      <div class="contenedor seccion--estrecha" style="display:grid;gap:20px">
+        <div data-aviso-modo></div>
+
+        <!-- Formulario -->
+        <form class="tarjeta formulario" id="form-envio" novalidate>
+          <h2 class="mb-0">Tus datos</h2>
+
+          <div class="campo--fila">
+            <div class="campo">
+              <label for="nombre">Nombre completo <span class="obligatorio">*</span></label>
+              <input type="text" id="nombre" name="nombre" autocomplete="name" maxlength="120" required>
+              <p class="error" aria-live="polite"></p>
+            </div>
+            <div class="campo">
+              <label for="documento">Número de documento <span class="obligatorio">*</span></label>
+              <input type="text" id="documento" name="documento" inputmode="numeric" maxlength="20" required>
+              <p class="ayuda">Con este número consultarás tu calificación.</p>
+              <p class="error" aria-live="polite"></p>
+            </div>
+          </div>
+
+          <div class="campo--fila">
+            <div class="campo">
+              <label for="correo">Correo electrónico <span class="obligatorio">*</span></label>
+              <input type="email" id="correo" name="correo" autocomplete="email" maxlength="120" required>
+              <p class="error" aria-live="polite"></p>
+            </div>
+            <div class="campo">
+              <label for="whatsapp">WhatsApp <span class="texto-suave">(opcional)</span></label>
+              <input type="tel" id="whatsapp" name="whatsapp" autocomplete="tel" maxlength="20" placeholder="+57 300 000 0000">
+              <p class="error" aria-live="polite"></p>
+            </div>
+          </div>
+
+          <div class="campo--fila">
+            <div class="campo">
+              <label for="pais">País <span class="obligatorio">*</span></label>
+              <select id="pais" name="pais" required></select>
+              <p class="error" aria-live="polite"></p>
+            </div>
+            <div class="campo">
+              <label for="zona">Zona o sede <span class="obligatorio">*</span></label>
+              <input type="text" id="zona" name="zona" maxlength="80" placeholder="Como aparece en Campus" required>
+              <p class="error" aria-live="polite"></p>
+            </div>
+          </div>
+
+          <div class="campo">
+            <label for="grupo">Grupo o docente <span class="texto-suave">(opcional)</span></label>
+            <input type="text" id="grupo" name="grupo" maxlength="80">
+            <p class="error" aria-live="polite"></p>
+          </div>
+
+          <h2 class="mb-0 mt-2">Tu video</h2>
+
+          <div class="campo">
+            <label for="titulo">Título del video <span class="obligatorio">*</span></label>
+            <input type="text" id="titulo" name="titulo" maxlength="120" placeholder="Ejemplo: Reciclando en mi barrio" required>
+            <p class="error" aria-live="polite"></p>
+          </div>
+
+          <div class="campo">
+            <label for="descripcion">Descripción breve <span class="texto-suave">(opcional)</span></label>
+            <textarea id="descripcion" name="descripcion" maxlength="600" placeholder="Cuéntanos en pocas líneas de qué trata tu video."></textarea>
+            <p class="error" aria-live="polite"></p>
+          </div>
+
+          <div class="campo">
+            <span class="etiqueta">¿Cómo vas a enviarlo? <span class="obligatorio">*</span></span>
+            <div class="opciones" role="radiogroup" aria-label="Tipo de entrega">
+              <label class="opcion opcion--activa" data-opcion="archivo">
+                <input type="radio" name="tipo" value="archivo" checked>
+                <span>📤 Subir el archivo</span><small>Desde tu celular o computador</small>
+              </label>
+              <label class="opcion" data-opcion="enlace">
+                <input type="radio" name="tipo" value="enlace">
+                <span>🔗 Pegar un enlace</span><small>YouTube, Drive u otro</small>
+              </label>
+            </div>
+          </div>
+
+          <div class="campo" id="campo-archivo">
+            <label class="zona-archivo" id="zona-archivo" for="archivo">
+              <input type="file" id="archivo" name="archivo" accept="video/*,.mp4,.mov,.webm,.m4v,.3gp,.mkv">
+              <div class="zona-archivo__icono">🎬</div>
+              <strong>Toca aquí para elegir tu video</strong>
+              <span>o arrástralo a este recuadro · máximo <span data-peso>500 MB</span></span>
+            </label>
+            <div id="archivo-seleccionado" class="archivo-seleccionado" hidden>
+              <div><strong data-nombre></strong><small data-detalle></small></div>
+              <button type="button" class="btn btn--secundario btn--pequeno" id="quitar-archivo">Quitar</button>
+            </div>
+            <p class="error" aria-live="polite"></p>
+          </div>
+
+          <div class="campo" id="campo-enlace" hidden>
+            <label for="enlace">Enlace del video <span class="obligatorio">*</span></label>
+            <input type="url" id="enlace" name="enlace" inputmode="url" placeholder="https://youtube.com/..." maxlength="500">
+            <p class="ayuda">Verifica que el enlace sea público o "cualquier persona con el enlace puede ver".</p>
+            <p class="error" aria-live="polite"></p>
+          </div>
+
+          <div class="campo campo--check">
+            <input type="checkbox" id="autoriza" name="autoriza">
+            <div>
+              <label for="autoriza">Autorizo al curso a usar mi video con fines educativos y de divulgación del programa. <span class="obligatorio">*</span></label>
+              <p class="error" aria-live="polite"></p>
+            </div>
+          </div>
+
+          <div class="acciones">
+            <button type="submit" class="btn btn--acento" id="btn-enviar" style="font-size:1.02rem;padding:14px 28px">Enviar mi proyecto</button>
+            <span class="texto-suave" style="font-size:.86rem">No cierres esta página mientras se sube el video.</span>
+          </div>
+        </form>
+
+        <!-- Progreso -->
+        <div class="tarjeta" id="panel-progreso" hidden aria-live="polite">
+          <h2>Subiendo tu video…</h2>
+          <div class="progreso">
+            <div class="progreso__barra"><div class="progreso__relleno" id="progreso-relleno"></div></div>
+            <div class="progreso__texto"><span id="progreso-estado">Preparando…</span><span id="progreso-porcentaje">0%</span></div>
+          </div>
+          <p class="texto-suave mt-2 mb-0">Mantén la pantalla encendida y no cambies de página. En redes lentas puede tardar varios minutos.</p>
+        </div>
+
+        <!-- Error -->
+        <div id="panel-error" hidden>
+          <div class="aviso aviso--error">
+            <span class="aviso__icono">⚠️</span>
+            <div>
+              <p><strong>No pudimos completar el envío.</strong></p>
+              <p id="error-mensaje"></p>
+              <p>Tus datos siguen en el formulario. Puedes <strong>reintentar</strong>: si ya se había subido una parte del video, continuará desde donde quedó.</p>
+              <div class="acciones mt-1">
+                <button type="button" class="btn btn--primario btn--pequeno" id="btn-reintentar">Reintentar</button>
+                <a class="btn btn--secundario btn--pequeno" id="enlace-respaldo" href="#" target="_blank" rel="noopener" hidden>Usar el formulario de respaldo</a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Confirmación -->
+        <div class="tarjeta confirmacion" id="panel-exito" hidden tabindex="-1">
+          <div class="confirmacion__icono">✅</div>
+          <h2 class="mb-0">¡Tu proyecto fue recibido!</h2>
+          <p class="texto-suave mb-0">Guarda este número de radicado. Es tu constancia de entrega.</p>
+          <div class="radicado" id="radicado"></div>
+          <p id="exito-detalle" class="mb-0"></p>
+          <div id="exito-demo" class="aviso aviso--alerta" hidden style="text-align:left">
+            <span class="aviso__icono">🧪</span>
+            <div><p><strong>Modo demostración:</strong> esta entrega se guardó solo en tu navegador. El video no fue enviado a Google Drive porque el backend aún no está conectado.</p></div>
+          </div>
+          <div class="acciones" style="justify-content:center">
+            <a class="btn btn--primario" href="calificacion.html">Ir a consultar mi calificación</a>
+            <button type="button" class="btn btn--secundario" id="btn-otro">Enviar otro video</button>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="pie-pagina" data-pie></footer>
+
+  <script src="assets/js/config.js"></script>
+  <script src="assets/js/demo-store.js"></script>
+  <script src="assets/js/api.js"></script>
+  <script src="assets/js/ui.js"></script>
+  <script src="assets/js/upload.js"></script>
+  <script src="assets/js/pages/envio.js"></script>
+</body>
+</html>

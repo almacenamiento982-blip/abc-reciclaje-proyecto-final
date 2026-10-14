@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 240" role="img" aria-label="Símbolo de reciclaje alrededor del planeta">
+  <defs>
+    <linearGradient id="globo" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#3b8fd1"/><stop offset="1" stop-color="#1c5f94"/>
+    </linearGradient>
+    <linearGradient id="flecha" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#a9d394"/><stop offset="1" stop-color="#7dad63"/>
+    </linearGradient>
+  </defs>
+  <circle cx="120" cy="124" r="46" fill="url(#globo)"/>
+  <path d="M96 108c6-8 14-10 20-6 4 3 2 9 7 12 6 3 12 0 16 6 3 5-2 10-8 12-7 2-12-3-18-1-7 2-9 9-16 7-6-2-7-9-5-15 1-6 1-11 4-15z" fill="#7cc27c" opacity=".95"/>
+  <path d="M132 92c5-2 11 0 13 5 1 4-3 6-6 8-4 2-9 2-11-2-2-4 0-9 4-11z" fill="#7cc27c" opacity=".95"/>
+  <g fill="url(#flecha)" stroke="#5f8f4a" stroke-width="2" stroke-linejoin="round">
+    <path d="M70 92l22-38h34l-10 16h-14l-14 24z"/>
+    <path d="M126 54l22 2-10 18z"/>
+    <path d="M176 100l24 42-18 28-10-16 8-12-14-24z"/>
+    <path d="M182 170l-10 20-10-18z"/>
+    <path d="M110 196H64l-18-30 20 0 8 14h28z"/>
+    <path d="M38 166l-14-18h22z"/>
+  </g>
+</svg>
