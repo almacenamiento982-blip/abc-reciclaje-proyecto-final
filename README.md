@@ -18,7 +18,7 @@ registro en **Google Sheets**.
 |---|---|---|
 | `index.html` | Estudiante | Portada con los 3 pasos y acceso al muro de árboles. |
 | `instructivo.html` | Estudiante | Paso 1: el instructivo oficial del curso ("CAMPUS Paso 1: Instrucciones"): ejemplos de proyecto, las 4 preguntas del video, los 5 pasos, duración de 1 a 4 minutos, detalles técnicos, preguntas frecuentes y las "prendas" de la estrategia de cobertura. |
-| `envio.html` | Estudiante | Paso 2: formulario con validaciones, carga del video por fragmentos con barra de progreso y reanudación, o envío por enlace. Entrega un **radicado**. |
+| `envio.html` | Estudiante | Paso 2: los mismos campos del formulario oficial de Google (nombre, correo del CAMPUS, zona o país con sus 8 opciones, grupo por día y hora con su código, video, "¿cómo te sentiste?" y comentario adicional), más documento y nombre del proyecto opcionales. Subida directa a Drive con progreso y reanudación, o envío por enlace. Entrega un **radicado** y el mensaje de cierre con el recordatorio del árbol. |
 | `calificacion.html` | Estudiante | Paso 3: consulta de nota y retroalimentación. **Desactivado** (`MOSTRAR_CALIFICACION: false` en `config.js`) porque la calificación se gestiona en Campus; el menú, el paso 3 y la calificación en el panel docente quedan ocultos y pueden reactivarse con ese interruptor. |
 | `arboles.html` | Todos | Muro tipo Padlet + mapa (Leaflet/OpenStreetMap) con los árboles sembrados, y formulario para registrar el propio (foto comprimida en el navegador, ubicación opcional). |
 | `docentes.html` | Docentes | Panel con clave: lista de entregas, filtros, enlace al video en Drive, calificación con retroalimentación, eliminación de entregas (el video va a la papelera de Drive), moderación y eliminación en el muro, y descarga CSV. |
@@ -100,7 +100,7 @@ paso 3 lee la hoja.
 | Backend Apps Script (subida a Drive, registro, consulta, panel) | ✅ Publicado con clasp (implementación `v1 - prototipo`) y autorizado por el dueño de la cuenta |
 | Almacenamiento real de videos en Drive | ✅ Probado el 14-oct-2026: video de 20,6 MB subido en 3 fragmentos desde el sitio publicado, MD5 idéntico al original en `01 Videos proyecto final`, fila `ABC-2026-00001` en la hoja, calificación desde el panel y visible en el paso 3 |
 | Publicación en GitHub Pages | ✅ Publicado |
-| Google Form de respaldo | ⏳ Opcional. Composio no tiene Google Forms conectado y la API de Forms no permite crear preguntas de carga de archivos: se crea a mano y se pega en `FORM_RESPALDO_URL` |
+| Google Form de respaldo | ✅ Existe el formulario oficial "Entrega de Video del Curso ABC del Reciclaje" (requiere iniciar sesión en Google). Si se quiere ofrecer como respaldo cuando falle la subida, pegar su enlace en `FORM_RESPALDO_URL` |
 | Dominio propio / Render | ⏳ No necesario por ahora (ver `docs/DESPLIEGUE.md`) |
 
 ## 6. Backend publicado

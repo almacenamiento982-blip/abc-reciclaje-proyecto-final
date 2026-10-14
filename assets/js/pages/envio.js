@@ -9,7 +9,7 @@
   const campos = {
     nombre: $("#nombre"), documento: $("#documento"), correo: $("#correo"), whatsapp: $("#whatsapp"),
     pais: $("#pais"), zona: $("#zona"), grupo: $("#grupo"), titulo: $("#titulo"), descripcion: $("#descripcion"),
-    enlace: $("#enlace"), autoriza: $("#autoriza"), archivo: $("#archivo")
+    sentimiento: $("#sentimiento"), enlace: $("#enlace"), autoriza: $("#autoriza"), archivo: $("#archivo")
   };
   const zonaArchivo = $("#zona-archivo");
   const cajaArchivo = $("#archivo-seleccionado");
@@ -21,7 +21,17 @@
   let modo = "demo";
 
   /* ---------- Inicio ---------- */
-  UI.llenarSelect(campos.pais, C.PAISES, "Selecciona tu país");
+  UI.llenarSelect(campos.zona, C.ZONAS.map(z => z.nombre), "Selecciona tu zona o país");
+  function actualizarGrupos() {
+    const z = C.ZONAS.find(x => x.nombre === campos.zona.value);
+    campos.pais.value = z ? z.pais : "";
+    if (!z) { campos.grupo.innerHTML = '<option value="">Primero elige tu zona o país</option>'; campos.grupo.disabled = true; return; }
+    UI.llenarSelect(campos.grupo, z.grupos, z.grupos.length > 1 ? "Selecciona tu grupo" : "");
+    if (z.grupos.length === 1) campos.grupo.value = z.grupos[0];
+    campos.grupo.disabled = false;
+  }
+  campos.zona.addEventListener("change", actualizarGrupos);
+  actualizarGrupos();
   document.querySelectorAll("[data-peso]").forEach(el => el.textContent = C.VIDEO_MAX_MB + " MB");
   UI.limpiarErroresAlEscribir(form);
   restaurarBorrador();
@@ -82,8 +92,8 @@
   function leerMeta() {
     return {
       nombre: campos.nombre.value.trim(), documento: campos.documento.value.trim(), correo: campos.correo.value.trim(),
-      whatsapp: campos.whatsapp.value.trim(), pais: campos.pais.value, zona: campos.zona.value.trim(), grupo: campos.grupo.value.trim(),
-      titulo: campos.titulo.value.trim(), descripcion: campos.descripcion.value.trim(),
+      whatsapp: campos.whatsapp.value.trim(), pais: campos.pais.value, zona: campos.zona.value.trim(), grupo: campos.grupo.disabled ? "" : campos.grupo.value.trim(),
+      titulo: campos.titulo.value.trim(), descripcion: campos.descripcion.value.trim(), sentimiento: campos.sentimiento.value.trim(),
       tipo: form.tipo.value, enlace: campos.enlace.value.trim(), autoriza: campos.autoriza.checked ? "SI" : "NO"
     };
   }
@@ -93,8 +103,8 @@
     let b = null;
     try { b = JSON.parse(localStorage.getItem(CLAVE_BORRADOR) || "null"); } catch (e) { /* ignorar */ }
     if (!b) return;
-    ["nombre", "documento", "correo", "whatsapp", "zona", "grupo", "titulo", "descripcion", "enlace"].forEach(k => { if (b[k]) campos[k].value = b[k]; });
-    if (b.pais) campos.pais.value = b.pais;
+    ["nombre", "documento", "correo", "titulo", "descripcion", "sentimiento", "enlace"].forEach(k => { if (b[k] && campos[k]) campos[k].value = b[k]; });
+    if (b.zona) { campos.zona.value = b.zona; actualizarGrupos(); if (b.grupo) campos.grupo.value = b.grupo; }
     if (b.tipo === "enlace") { form.querySelector('input[value="enlace"]').checked = true; form.querySelector('input[value="enlace"]').dispatchEvent(new Event("change")); }
     UI.toast("Recuperamos los datos que habías escrito.", "", 3500);
   }
@@ -106,12 +116,11 @@
     const v = UI.validar;
     let ok = true;
     ok = v.minimo(campos.nombre, 3, "El nombre") && ok;
-    ok = v.documento(campos.documento) && ok;
+    ok = (campos.documento.value.trim() ? v.documento(campos.documento) : true) && ok;
     ok = v.correo(campos.correo, false) && ok;
-    ok = v.telefono(campos.whatsapp) && ok;
-    ok = v.requerido(campos.pais, "El país") && ok;
-    ok = v.minimo(campos.zona, 2, "La zona o sede") && ok;
-    ok = v.minimo(campos.titulo, 3, "El título") && ok;
+    ok = v.requerido(campos.zona, "La zona o país") && ok;
+    if (!campos.zona.value) { /* el grupo depende de la zona */ }
+    else if (!campos.grupo.value) { campos.grupo.setAttribute("aria-invalid", "true"); campos.grupo.closest(".campo").querySelector(".error").textContent = "Selecciona tu grupo."; ok = false; }
     if (form.tipo.value === "archivo") {
       const errorEl = $("#campo-archivo .error");
       if (!archivoActual) { errorEl.textContent = "Selecciona el archivo de tu video."; ok = false; }
@@ -173,7 +182,7 @@
     panelProgreso.hidden = true;
     form.hidden = true;
     $("#radicado").textContent = r.radicado;
-    $("#exito-detalle").innerHTML = "Entrega de <strong>" + UI.escapar(meta.nombre) + "</strong> · documento " + UI.escapar(meta.documento) +
+    $("#exito-detalle").innerHTML = "Entrega de <strong>" + UI.escapar(meta.nombre) + "</strong> · " + UI.escapar(meta.zona) + (meta.grupo ? " · " + UI.escapar(meta.grupo) : "") +
       (meta.tipo === "archivo" && archivoActual ? " · " + UI.escapar(archivoActual.name) + " (" + UI.formatoMB(archivoActual.size) + ")" : " · enlace") +
       ". Estado: <strong>" + UI.escapar(r.estado || "Recibido") + "</strong>.";
     $("#exito-demo").hidden = modo !== "demo";
@@ -189,7 +198,7 @@
   $("#btn-otro").addEventListener("click", () => {
     panelExito.hidden = true;
     form.hidden = false;
-    campos.titulo.value = ""; campos.descripcion.value = ""; campos.enlace.value = "";
+    campos.titulo.value = ""; campos.descripcion.value = ""; campos.sentimiento.value = ""; campos.enlace.value = "";
     campos.archivo.value = ""; archivoActual = null; cajaArchivo.hidden = true;
     campos.autoriza.checked = false;
     window.scrollTo({ top: 0, behavior: "smooth" });

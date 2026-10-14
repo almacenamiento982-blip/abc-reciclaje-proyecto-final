@@ -82,8 +82,8 @@
       <tr>
         <td><strong>${UI.escapar(e.radicado)}</strong><br><small class="texto-suave">${UI.escapar(UI.formatoFecha(e.fecha))}</small></td>
         <td>${UI.escapar(e.nombre)}<br><small class="texto-suave">Doc. ${UI.escapar(e.documento)}${e.correo ? " · " + UI.escapar(e.correo) : ""}</small></td>
-        <td>${UI.escapar(e.zona || "")}<br><small class="texto-suave">${UI.escapar(e.pais || "")}</small></td>
-        <td>${UI.escapar(e.titulo || "")}<br><small>${enlaceVideo(e)}${e.tamanoMB ? ` <span class="texto-suave">· ${UI.escapar(e.tamanoMB)} MB</span>` : ""}</small></td>
+        <td>${UI.escapar(e.zona || "")}<br><small class="texto-suave">${UI.escapar(e.grupo || e.pais || "")}</small></td>
+        <td>${UI.escapar(e.titulo || "")}<br><small>${enlaceVideo(e)}${e.tamanoMB ? ` <span class="texto-suave">· ${UI.escapar(e.tamanoMB)} MB</span>` : ""}</small>${e.sentimiento || e.descripcion ? `<details class="mt-1"><summary style="cursor:pointer;font-size:.8rem;color:var(--verde-600)">Ver respuestas</summary><small>${e.sentimiento ? `<strong>¿Cómo te sentiste?</strong> ${UI.escapar(e.sentimiento)}<br>` : ""}${e.descripcion ? `<strong>Adicional:</strong> ${UI.escapar(e.descripcion)}` : ""}</small></details>` : ""}</td>
         <td><span class="estado ${UI.claseEstado(e.estado)}">${UI.escapar(e.estado)}</span></td>
         ${CAL ? `<td>${e.nota !== "" && e.nota != null ? "<strong>" + UI.escapar(e.nota) + "</strong>" : "–"}</td>` : ""}
         <td><div class="acciones" style="gap:6px;flex-wrap:nowrap">${CAL ? `<button type="button" class="btn btn--primario btn--pequeno" data-calificar="${UI.escapar(e.radicado)}">${e.estado === "Calificado" ? "Editar" : "Calificar"}</button>` : ""}<button type="button" class="btn btn--peligro btn--pequeno" data-eliminar="${UI.escapar(e.radicado)}" title="Eliminar esta entrega y su video">Eliminar</button></div></td>
@@ -190,7 +190,7 @@
 
   /* ---------- CSV ---------- */
   $("#btn-csv").addEventListener("click", () => {
-    const cols = ["radicado", "fecha", "nombre", "documento", "correo", "whatsapp", "pais", "zona", "grupo", "titulo", "descripcion", "tipo", "enlace", "archivoId", "tamanoMB", "estado", "nota", "retroalimentacion", "docente", "fechaCalificacion"];
+    const cols = ["radicado", "fecha", "nombre", "documento", "correo", "pais", "zona", "grupo", "titulo", "sentimiento", "descripcion", "tipo", "enlace", "archivoId", "tamanoMB", "estado"].concat(CAL ? ["nota", "retroalimentacion", "docente", "fechaCalificacion"] : []);
     const esc = v => '"' + String(v == null ? "" : v).replace(/"/g, '""') + '"';
     const csv = "﻿" + cols.join(";") + "\n" + filtradas().map(e => cols.map(c => esc(e[c])).join(";")).join("\n");
     const a = document.createElement("a");

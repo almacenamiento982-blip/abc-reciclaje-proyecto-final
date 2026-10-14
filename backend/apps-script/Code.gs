@@ -26,19 +26,20 @@ var CONFIG = {
   FOTO_MAX_BYTES: 12 * 1024 * 1024,
   NOTA_MIN: 0,
   NOTA_MAX: 5,
-  VERSION: '0.2.0'
+  VERSION: '0.3.0'
 };
 
 var COL_ENTREGAS = ['Radicado', 'Fecha envio', 'Nombre completo', 'Documento', 'Correo', 'WhatsApp', 'Pais', 'Zona / Sede',
-  'Grupo / Docente', 'Titulo del video', 'Descripcion', 'Tipo entrega', 'Archivo Drive ID', 'Enlace video', 'Tamano MB',
-  'Estado', 'Nota', 'Retroalimentacion', 'Docente que califica', 'Fecha calificacion', 'Autoriza uso', 'Origen'];
+  'Grupo / Docente', 'Titulo del video', 'Comentario adicional', 'Tipo entrega', 'Archivo Drive ID', 'Enlace video', 'Tamano MB',
+  'Estado', 'Nota', 'Retroalimentacion', 'Docente que califica', 'Fecha calificacion', 'Autoriza uso', 'Origen',
+  'Como te sentiste'];
 var COL_ARBOLES = ['ID', 'Fecha', 'Nombre', 'Documento', 'Correo', 'Ciudad', 'Pais', 'Latitud', 'Longitud', 'Mensaje',
   'Foto Drive ID', 'Foto URL', 'Publicar', 'Origen'];
 
 // Índices (base 0) de las columnas de Entregas
 var E = { RADICADO: 0, FECHA: 1, NOMBRE: 2, DOCUMENTO: 3, CORREO: 4, WHATSAPP: 5, PAIS: 6, ZONA: 7, GRUPO: 8, TITULO: 9,
   DESCRIPCION: 10, TIPO: 11, ARCHIVO_ID: 12, ENLACE: 13, TAMANO: 14, ESTADO: 15, NOTA: 16, RETRO: 17, DOCENTE: 18,
-  FECHA_CAL: 19, AUTORIZA: 20, ORIGEN: 21 };
+  FECHA_CAL: 19, AUTORIZA: 20, ORIGEN: 21, SENTIMIENTO: 22 };
 var A = { ID: 0, FECHA: 1, NOMBRE: 2, DOCUMENTO: 3, CORREO: 4, CIUDAD: 5, PAIS: 6, LAT: 7, LNG: 8, MENSAJE: 9,
   FOTO_ID: 10, FOTO_URL: 11, PUBLICAR: 12, ORIGEN: 13 };
 
@@ -292,6 +293,7 @@ function filaEntrega_(meta, radicado, tipo, archivoId, enlace, tamanoMB, estado)
   fila[E.GRUPO] = meta.grupo; fila[E.TITULO] = meta.titulo; fila[E.DESCRIPCION] = meta.descripcion; fila[E.TIPO] = tipo;
   fila[E.ARCHIVO_ID] = archivoId; fila[E.ENLACE] = enlace; fila[E.TAMANO] = tamanoMB; fila[E.ESTADO] = estado;
   fila[E.NOTA] = ''; fila[E.RETRO] = ''; fila[E.DOCENTE] = ''; fila[E.FECHA_CAL] = ''; fila[E.AUTORIZA] = meta.autoriza; fila[E.ORIGEN] = 'web';
+  fila[E.SENTIMIENTO] = meta.sentimiento;
   return fila;
 }
 
@@ -375,7 +377,8 @@ function docentesListar_(d) {
       radicado: f[E.RADICADO], fecha: iso_(f[E.FECHA]), nombre: f[E.NOMBRE], documento: f[E.DOCUMENTO], correo: f[E.CORREO],
       whatsapp: f[E.WHATSAPP], pais: f[E.PAIS], zona: f[E.ZONA], grupo: f[E.GRUPO], titulo: f[E.TITULO], descripcion: f[E.DESCRIPCION],
       tipo: f[E.TIPO], archivoId: f[E.ARCHIVO_ID], enlace: f[E.ENLACE], tamanoMB: f[E.TAMANO], estado: f[E.ESTADO],
-      nota: f[E.NOTA], retroalimentacion: f[E.RETRO], docente: f[E.DOCENTE], fechaCalificacion: iso_(f[E.FECHA_CAL]), autoriza: f[E.AUTORIZA]
+      nota: f[E.NOTA], retroalimentacion: f[E.RETRO], docente: f[E.DOCENTE], fechaCalificacion: iso_(f[E.FECHA_CAL]), autoriza: f[E.AUTORIZA],
+      sentimiento: f[E.SENTIMIENTO] || ''
     };
   }).reverse();
   var arboles = hojaArboles_().getDataRange().getValues().slice(1).filter(function (f) { return f[A.ID]; }).map(function (f) {
@@ -457,14 +460,16 @@ function validarMeta_(m) {
   var meta = {
     nombre: limpiar_(m.nombre, 120), documento: limpiar_(m.documento, 20), correo: limpiar_(m.correo, 120),
     whatsapp: limpiar_(m.whatsapp, 20), pais: limpiar_(m.pais, 60), zona: limpiar_(m.zona, 80), grupo: limpiar_(m.grupo, 80),
-    titulo: limpiar_(m.titulo, 120), descripcion: limpiar_(m.descripcion, 600), enlace: limpiar_(m.enlace, 500),
+    titulo: limpiar_(m.titulo, 120), descripcion: limpiar_(m.descripcion, 1000), sentimiento: limpiar_(m.sentimiento, 1000),
+    enlace: limpiar_(m.enlace, 500),
     autoriza: String(m.autoriza).toUpperCase() === 'SI' ? 'SI' : 'NO'
   };
   if (meta.nombre.length < 3) throw new Error('El nombre es obligatorio.');
-  if (normalizarDoc_(meta.documento).length < 4) throw new Error('El documento es obligatorio.');
+  if (meta.documento && normalizarDoc_(meta.documento).length < 4) throw new Error('El documento no es válido.');
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(meta.correo)) throw new Error('El correo no es válido.');
-  if (!meta.pais || !meta.zona) throw new Error('País y zona son obligatorios.');
-  if (meta.titulo.length < 3) throw new Error('El título es obligatorio.');
+  if (!meta.zona) throw new Error('La zona o país es obligatoria.');
+  if (!meta.grupo) throw new Error('El grupo es obligatorio.');
+  if (!meta.pais) meta.pais = /España/i.test(meta.zona) ? 'España' : (/Suiza/i.test(meta.zona) ? 'Suiza' : 'Colombia');
   if (meta.autoriza !== 'SI') throw new Error('Debes autorizar el uso del video.');
   return meta;
 }

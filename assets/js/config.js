@@ -49,7 +49,30 @@ window.ABC_CONFIG = {
   NOTA_MIN: 0,
   NOTA_MAX: 5,
 
-  // Países sugeridos en el formulario (el Padlet de referencia incluye
+  // Zonas o países y sus grupos (día y hora de clase), tomados del formulario
+  // oficial "Entrega de Video del Curso ABC del Reciclaje". Editar aquí si
+  // cambian los grupos.
+  ZONAS: [
+    { nombre: "Zona Sur y Llanos", pais: "Colombia", grupos: [
+      "Miércoles 9:00am-10:30am (G-4246)", "Sábado 8:00am-9:30am (G-4248)", "Jueves 21:00pm-22:30pm (G-4873)"] },
+    { nombre: "Zona de Antioquia y Eje Cafetero", pais: "Colombia", grupos: [
+      "Sábado 8:30-10:00am (G-5103)", "Viernes 3:00-4:30pm (G-4739)"] },
+    { nombre: "Zona de Bogotá y Cundinamarca", pais: "Colombia", grupos: [
+      "Lunes 10:00-11:30am (G-4848)", "Martes 7:00-8:30pm (G-4849)", "Sábado 8:00-9:30am (G-4850)",
+      "Sábado 9:00-10:30am (G-4851)", "Viernes 3:00-4:30pm (G-4911)"] },
+    { nombre: "Zona de Santanderes y Boyacá", pais: "Colombia", grupos: [
+      "Sábado 9:00-10:30am (G-4372)"] },
+    { nombre: "Zona Pacífico", pais: "Colombia", grupos: [
+      "Martes 20:00-21:30pm (G-4258)", "Jueves 20:00-21:30pm (G-4259)"] },
+    { nombre: "Zona Caribe", pais: "Colombia", grupos: [
+      "Viernes 16:30-18:00pm (G-4710)"] },
+    { nombre: "País España", pais: "España", grupos: [
+      "Sábados HORA ESPAÑA 10:00-11:30am (Grupo 4584)"] },
+    { nombre: "País Suiza", pais: "Suiza", grupos: [
+      "Martes HORA SUIZA 21:00 (G-4409)"] }
+  ],
+
+  // Países sugeridos en el formulario de árboles (el Padlet de referencia incluye
   // Colombia, Argentina, Venezuela, Reino Unido y Suiza).
   PAISES: [
     "Colombia", "Argentina", "Venezuela", "Reino Unido", "Suiza",

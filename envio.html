@@ -38,61 +38,47 @@
 
           <div class="campo--fila">
             <div class="campo">
-              <label for="nombre">Nombre completo <span class="obligatorio">*</span></label>
+              <label for="nombre">Escribe aquí tu nombre completo <span class="obligatorio">*</span></label>
               <input type="text" id="nombre" name="nombre" autocomplete="name" maxlength="120" required>
               <p class="error" aria-live="polite"></p>
             </div>
             <div class="campo">
-              <label for="documento">Número de documento <span class="obligatorio">*</span></label>
-              <input type="text" id="documento" name="documento" inputmode="numeric" maxlength="20" required>
-              <p class="ayuda"><span data-calificacion>Con este número consultarás tu calificación.</span><span data-sin-calificacion hidden>Escríbelo sin puntos ni espacios.</span></p>
-              <p class="error" aria-live="polite"></p>
-            </div>
-          </div>
-
-          <div class="campo--fila">
-            <div class="campo">
-              <label for="correo">Correo electrónico <span class="obligatorio">*</span></label>
+              <label for="correo">Correo electrónico con que ingresas al CAMPUS <span class="obligatorio">*</span></label>
               <input type="email" id="correo" name="correo" autocomplete="email" maxlength="120" required>
-              <p class="error" aria-live="polite"></p>
-            </div>
-            <div class="campo">
-              <label for="whatsapp">WhatsApp <span class="texto-suave">(opcional)</span></label>
-              <input type="tel" id="whatsapp" name="whatsapp" autocomplete="tel" maxlength="20" placeholder="+57 300 000 0000">
-              <p class="error" aria-live="polite"></p>
-            </div>
-          </div>
-
-          <div class="campo--fila">
-            <div class="campo">
-              <label for="pais">País <span class="obligatorio">*</span></label>
-              <select id="pais" name="pais" required></select>
-              <p class="error" aria-live="polite"></p>
-            </div>
-            <div class="campo">
-              <label for="zona">Zona o sede <span class="obligatorio">*</span></label>
-              <input type="text" id="zona" name="zona" maxlength="80" placeholder="Como aparece en Campus" required>
               <p class="error" aria-live="polite"></p>
             </div>
           </div>
 
           <div class="campo">
-            <label for="grupo">Grupo o docente <span class="texto-suave">(opcional)</span></label>
-            <input type="text" id="grupo" name="grupo" maxlength="80">
+            <label for="documento">Número de documento <span class="texto-suave">(opcional)</span></label>
+            <input type="text" id="documento" name="documento" inputmode="numeric" maxlength="20">
+            <p class="ayuda">Ayuda al equipo docente a identificar tu entrega. Sin puntos ni espacios.</p>
             <p class="error" aria-live="polite"></p>
           </div>
+
+          <h2 class="mb-0 mt-2">Tu grupo</h2>
+          <p class="texto-suave mb-0">Excelente, ahora vas a encontrar tu grupo.</p>
+
+          <div class="campo--fila">
+            <div class="campo">
+              <label for="zona">Selecciona tu zona o país <span class="obligatorio">*</span></label>
+              <select id="zona" name="zona" required></select>
+              <p class="error" aria-live="polite"></p>
+            </div>
+            <div class="campo">
+              <label for="grupo">Ahora selecciona tu grupo según el día y hora de clase que tienes <span class="obligatorio">*</span></label>
+              <select id="grupo" name="grupo" required disabled></select>
+              <p class="error" aria-live="polite"></p>
+            </div>
+          </div>
+          <input type="hidden" id="pais" name="pais" value="">
+          <input type="hidden" id="whatsapp" name="whatsapp" value="">
 
           <h2 class="mb-0 mt-2">Tu video</h2>
 
           <div class="campo">
-            <label for="titulo">¿Cómo se llama tu proyecto? <span class="obligatorio">*</span></label>
-            <input type="text" id="titulo" name="titulo" maxlength="120" placeholder="Ejemplo: Mi casa limpia o Eco-Emprendimiento" required>
-            <p class="error" aria-live="polite"></p>
-          </div>
-
-          <div class="campo">
-            <label for="descripcion">¿De qué se trata tu proyecto? <span class="texto-suave">(opcional)</span></label>
-            <textarea id="descripcion" name="descripcion" maxlength="600" placeholder="En pocas líneas: qué materiales reciclas y dónde lo haces."></textarea>
+            <label for="titulo">¿Cómo se llama tu proyecto? <span class="texto-suave">(opcional)</span></label>
+            <input type="text" id="titulo" name="titulo" maxlength="120" placeholder="Ejemplo: Mi casa limpia o Eco-Emprendimiento">
             <p class="error" aria-live="polite"></p>
           </div>
 
@@ -128,6 +114,18 @@
             <label for="enlace">Enlace del video <span class="obligatorio">*</span></label>
             <input type="url" id="enlace" name="enlace" inputmode="url" placeholder="https://youtube.com/..." maxlength="500">
             <p class="ayuda">Verifica que el enlace sea público o "cualquier persona con el enlace puede ver".</p>
+            <p class="error" aria-live="polite"></p>
+          </div>
+
+          <div class="campo">
+            <label for="sentimiento">¿Cómo te sentiste realizando y enviando tu video? <span class="texto-suave">(opcional)</span></label>
+            <textarea id="sentimiento" name="sentimiento" maxlength="1000"></textarea>
+            <p class="error" aria-live="polite"></p>
+          </div>
+
+          <div class="campo">
+            <label for="descripcion">Si quieres decir algo adicional o realizar alguna pregunta, puedes escribirlo aquí <span class="texto-suave">(opcional)</span></label>
+            <textarea id="descripcion" name="descripcion" maxlength="1000"></textarea>
             <p class="error" aria-live="polite"></p>
           </div>
 
@@ -178,6 +176,13 @@
           <p class="texto-suave mb-0">Guarda este número de radicado. Es tu constancia de entrega.</p>
           <div class="radicado" id="radicado"></div>
           <p id="exito-detalle" class="mb-0"></p>
+          <div class="aviso aviso--exito" style="text-align:left">
+            <span class="aviso__icono">🎉</span>
+            <div>
+              <p><strong>¡Felicitaciones por tu proyecto!</strong> Lo más importante es que ya empezaste a tomar acción para hacer tu proyecto real. 🌳</p>
+              <p>Recuerda sembrar un árbol y ponerte los guantes del EcoHéroe: en unos días puedes enviarnos las fotos del lugar donde sembraste tu árbol en el <a href="arboles.html#registrar">muro de árboles</a>.</p>
+            </div>
+          </div>
           <div id="exito-demo" class="aviso aviso--alerta" hidden style="text-align:left">
             <span class="aviso__icono">🧪</span>
             <div><p><strong>Modo demostración:</strong> esta entrega se guardó solo en tu navegador. El video no fue enviado a Google Drive porque el backend aún no está conectado.</p></div>
