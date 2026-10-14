@@ -80,12 +80,12 @@
     if (!lista.length) { tb.innerHTML = '<tr><td colspan="7" class="texto-suave">No hay entregas que coincidan.</td></tr>'; return; }
     tb.innerHTML = lista.map(e => `
       <tr>
-        <td><strong>${UI.escapar(e.radicado)}</strong><br><small class="texto-suave">${UI.escapar(UI.formatoFecha(e.fecha))}</small></td>
-        <td>${UI.escapar(e.nombre)}<br><small class="texto-suave">Doc. ${UI.escapar(e.documento)}${e.correo ? " · " + UI.escapar(e.correo) : ""}</small></td>
-        <td>${UI.escapar(e.zona || "")}<br><small class="texto-suave">${UI.escapar(e.grupo || e.pais || "")}</small></td>
-        <td>${UI.escapar(e.titulo || "")}<br><small>${enlaceVideo(e)}${e.tamanoMB ? ` <span class="texto-suave">· ${UI.escapar(e.tamanoMB)} MB</span>` : ""}</small>${e.sentimiento || e.descripcion ? `<details class="mt-1"><summary style="cursor:pointer;font-size:.8rem;color:var(--verde-600)">Ver respuestas</summary><small>${e.sentimiento ? `<strong>¿Cómo te sentiste?</strong> ${UI.escapar(e.sentimiento)}<br>` : ""}${e.descripcion ? `<strong>Adicional:</strong> ${UI.escapar(e.descripcion)}` : ""}</small></details>` : ""}</td>
-        <td><span class="estado ${UI.claseEstado(e.estado)}">${UI.escapar(e.estado)}</span></td>
-        ${CAL ? `<td>${e.nota !== "" && e.nota != null ? "<strong>" + UI.escapar(e.nota) + "</strong>" : "–"}</td>` : ""}
+        <td data-etiqueta="Radicado"><span><strong>${UI.escapar(e.radicado)}</strong><br><small class="texto-suave">${UI.escapar(UI.formatoFecha(e.fecha))}</small></span></td>
+        <td data-etiqueta="Estudiante"><span>${UI.escapar(e.nombre)}<br><small class="texto-suave">${e.documento ? "Doc. " + UI.escapar(e.documento) + (e.correo ? " · " : "") : ""}${e.correo ? UI.escapar(e.correo) : ""}</small></span></td>
+        <td data-etiqueta="Zona"><span>${UI.escapar(e.zona || "")}<br><small class="texto-suave">${UI.escapar(e.grupo || e.pais || "")}</small></span></td>
+        <td data-etiqueta="Video"><span>${UI.escapar(e.titulo || "")}${e.titulo ? "<br>" : ""}<small>${enlaceVideo(e)}${e.tamanoMB ? ` <span class="texto-suave">· ${UI.escapar(e.tamanoMB)} MB</span>` : ""}</small>${e.sentimiento || e.descripcion ? `<details class="mt-1"><summary style="cursor:pointer;font-size:.8rem;color:var(--verde-600)">Ver respuestas</summary><small>${e.sentimiento ? `<strong>¿Cómo te sentiste?</strong> ${UI.escapar(e.sentimiento)}<br>` : ""}${e.descripcion ? `<strong>Adicional:</strong> ${UI.escapar(e.descripcion)}` : ""}</small></details>` : ""}</span></td>
+        <td data-etiqueta="Estado"><span class="estado ${UI.claseEstado(e.estado)}">${UI.escapar(e.estado)}</span></td>
+        ${CAL ? `<td data-etiqueta="Nota">${e.nota !== "" && e.nota != null ? "<strong>" + UI.escapar(e.nota) + "</strong>" : "–"}</td>` : ""}
         <td><div class="acciones" style="gap:6px;flex-wrap:nowrap">${CAL ? `<button type="button" class="btn btn--primario btn--pequeno" data-calificar="${UI.escapar(e.radicado)}">${e.estado === "Calificado" ? "Editar" : "Calificar"}</button>` : ""}<button type="button" class="btn btn--peligro btn--pequeno" data-eliminar="${UI.escapar(e.radicado)}" title="Eliminar esta entrega y su video">Eliminar</button></div></td>
       </tr>`).join("");
     tb.querySelectorAll("[data-calificar]").forEach(b => b.addEventListener("click", () => abrirModal(b.dataset.calificar)));
@@ -162,11 +162,11 @@
     if (!arboles.length) { tb.innerHTML = '<tr><td colspan="6" class="texto-suave">No hay árboles registrados.</td></tr>'; return; }
     tb.innerHTML = arboles.map(a => `
       <tr>
-        <td>${UI.escapar(a.id)}<br><small class="texto-suave">${UI.escapar(UI.formatoFecha(a.fecha))}</small></td>
-        <td>${UI.escapar(a.nombre)}<br><small class="texto-suave">Doc. ${UI.escapar(a.documento || "")}</small></td>
-        <td>${UI.escapar([a.ciudad, a.pais].filter(Boolean).join(", "))}</td>
-        <td>${UI.escapar(a.mensaje || "")}${a.fotoUrl ? ` <a href="${UI.escapar(a.fotoUrl)}" target="_blank" rel="noopener">foto ↗</a>` : ""}</td>
-        <td><span class="estado ${a.publicar === "NO" ? "estado--devuelto" : "estado--calificado"}">${a.publicar === "NO" ? "Oculto" : "Visible"}</span></td>
+        <td data-etiqueta="ID"><span>${UI.escapar(a.id)}<br><small class="texto-suave">${UI.escapar(UI.formatoFecha(a.fecha))}</small></span></td>
+        <td data-etiqueta="Nombre"><span>${UI.escapar(a.nombre)}<br><small class="texto-suave">Doc. ${UI.escapar(a.documento || "")}</small></span></td>
+        <td data-etiqueta="Lugar">${UI.escapar([a.ciudad, a.pais].filter(Boolean).join(", "))}</td>
+        <td data-etiqueta="Mensaje"><span>${UI.escapar(a.mensaje || "")}${a.fotoUrl ? ` <a href="${UI.escapar(a.fotoUrl)}" target="_blank" rel="noopener">foto ↗</a>` : ""}</span></td>
+        <td data-etiqueta="Visible"><span class="estado ${a.publicar === "NO" ? "estado--devuelto" : "estado--calificado"}">${a.publicar === "NO" ? "Oculto" : "Visible"}</span></td>
         <td><div class="acciones" style="gap:6px;flex-wrap:nowrap"><button type="button" class="btn btn--secundario btn--pequeno" data-arbol="${UI.escapar(a.id)}" data-publicar="${a.publicar === "NO" ? "1" : "0"}">${a.publicar === "NO" ? "Mostrar" : "Ocultar"}</button><button type="button" class="btn btn--peligro btn--pequeno" data-eliminar-arbol="${UI.escapar(a.id)}">Eliminar</button></div></td>
       </tr>`).join("");
     tb.querySelectorAll("[data-eliminar-arbol]").forEach(b => b.addEventListener("click", async () => {
@@ -187,6 +187,22 @@
       } catch (err) { UI.toast(err.message, "error"); b.disabled = false; }
     }));
   }
+
+  /* ---------- Cambiar clave ---------- */
+  $("#form-clave-nueva").addEventListener("submit", async e => {
+    e.preventDefault();
+    const nueva = $("#clave-nueva").value.trim();
+    const el = $("#clave-nueva");
+    if (nueva.length < 4) { el.setAttribute("aria-invalid", "true"); el.closest(".campo").querySelector(".error").textContent = "La clave debe tener al menos 4 caracteres."; return; }
+    const btn = $("#btn-clave-nueva"); btn.disabled = true; btn.innerHTML = '<span class="spinner"></span> Guardando…';
+    try {
+      await window.Api.docentes.cambiarClave({ clave, nueva });
+      clave = nueva; $("#clave").value = nueva; el.value = "";
+      try { sessionStorage.setItem("abc_docente_clave", clave); } catch (err) { /* ignorar */ }
+      UI.toast("Clave actualizada. Compártela solo con el equipo docente.", "exito", 6000);
+    } catch (err) { UI.toast(err.message, "error", 6000); }
+    finally { btn.disabled = false; btn.textContent = "Cambiar clave"; }
+  });
 
   /* ---------- CSV ---------- */
   $("#btn-csv").addEventListener("click", () => {

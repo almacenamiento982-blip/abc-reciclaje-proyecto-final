@@ -96,7 +96,8 @@
       calificar: (p) => DEMO ? window.DemoStore.calificar(p).then(verificar) : llamar("calificar", p).then(verificar),
       publicarArbol: (p) => DEMO ? window.DemoStore.publicarArbol(p).then(verificar) : llamar("publicar_arbol", p).then(verificar),
       eliminar: (p) => DEMO ? window.DemoStore.eliminar(p).then(verificar) : llamar("eliminar", p).then(verificar),
-      eliminarArbol: (p) => DEMO ? window.DemoStore.eliminarArbol(p).then(verificar) : llamar("eliminar_arbol", p).then(verificar)
+      eliminarArbol: (p) => DEMO ? window.DemoStore.eliminarArbol(p).then(verificar) : llamar("eliminar_arbol", p).then(verificar),
+      cambiarClave: (p) => DEMO ? Promise.resolve({ ok: false, error: "En modo demostración la clave no se puede cambiar." }).then(verificar) : llamar("cambiar_clave", p).then(verificar)
     }
   };
 

@@ -26,7 +26,7 @@ var CONFIG = {
   FOTO_MAX_BYTES: 12 * 1024 * 1024,
   NOTA_MIN: 0,
   NOTA_MAX: 5,
-  VERSION: '0.3.0'
+  VERSION: '0.3.1'
 };
 
 var COL_ENTREGAS = ['Radicado', 'Fecha envio', 'Nombre completo', 'Documento', 'Correo', 'WhatsApp', 'Pais', 'Zona / Sede',
@@ -80,6 +80,7 @@ function doPost(e) {
       case 'publicar_arbol': return json_(publicarArbol_(datos));
       case 'eliminar': return json_(eliminarEntrega_(datos));
       case 'eliminar_arbol': return json_(eliminarArbol_(datos));
+      case 'cambiar_clave': return json_(cambiarClave_(datos));
       default: return json_({ ok: false, error: 'Acción no reconocida: ' + datos.action });
     }
   } catch (err) {
@@ -422,6 +423,14 @@ function eliminarEntrega_(d) {
   if (archivoId) { try { DriveApp.getFileById(archivoId).setTrashed(true); papelera = true; } catch (e) { /* ya no existe */ } }
   hoja.deleteRow(fila);
   return { ok: true, radicado: radicado, videoEnPapelera: papelera };
+}
+
+function cambiarClave_(d) {
+  verificarClave_(d.clave);
+  var nueva = String(d.nueva || '').trim();
+  if (nueva.length < 4 || nueva.length > 40) throw new Error('La nueva clave debe tener entre 4 y 40 caracteres.');
+  PropertiesService.getScriptProperties().setProperty('DOCENTE_CLAVE', nueva);
+  return { ok: true };
 }
 
 function eliminarArbol_(d) {

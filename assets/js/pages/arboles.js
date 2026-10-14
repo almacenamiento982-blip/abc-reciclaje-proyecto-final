@@ -16,6 +16,7 @@
   UI.llenarSelect(campos.pais, C.PAISES, "Selecciona el país");
   UI.limpiarErroresAlEscribir(form);
 
+  iniciarMapa();
   UI.iniciarPagina("arboles").then(estado => {
     modo = estado.modo;
     if (modo === "demo") {
@@ -50,6 +51,7 @@
   function pintar(arboles) {
     const galeria = $("#galeria");
     $("#cont-arboles").textContent = arboles.length;
+    if (!arboles.length && mapa) mapa.setView([5, -60], 3);
     $("#cont-paises").textContent = new Set(arboles.map(a => a.pais).filter(Boolean)).size;
     if (!arboles.length) {
       galeria.innerHTML = '<p class="texto-suave">Todavía no hay árboles registrados. ¡Sé el primero!</p>';

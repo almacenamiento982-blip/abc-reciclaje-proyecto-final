@@ -66,9 +66,9 @@
       if (modo === "demo") {
         el.innerHTML = `<span class="chip chip--demo" title="Los envíos se guardan solo en este navegador"><span class="chip__punto"></span><span class="chip__largo">Modo demostración</span><span class="chip__corto">Demo</span></span>`;
       } else if (modo === "conectado") {
-        el.innerHTML = `<span class="chip chip--ok" title="Conectado al backend de Google"><span class="chip__punto"></span>Conectado</span>`;
+        el.innerHTML = `<span class="chip chip--ok" title="Conectado al backend de Google"><span class="chip__punto"></span><span class="chip__largo">Conectado</span></span>`;
       } else if (modo === "error") {
-        el.innerHTML = `<span class="chip chip--error" title="No se pudo contactar el backend"><span class="chip__punto"></span>Sin conexión</span>`;
+        el.innerHTML = `<span class="chip chip--error" title="No se pudo contactar el backend"><span class="chip__punto"></span><span class="chip__largo">Sin conexión</span></span>`;
       } else {
         el.innerHTML = "";
       }

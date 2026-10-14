@@ -72,6 +72,19 @@
             </div>
           </div>
 
+          <details class="detalle">
+            <summary>Cambiar la clave del panel</summary>
+            <form class="detalle__cuerpo formulario" id="form-clave-nueva" novalidate>
+              <div class="campo">
+                <label for="clave-nueva">Nueva clave</label>
+                <input type="password" id="clave-nueva" autocomplete="new-password" maxlength="40">
+                <p class="ayuda">La clave actual es la que usaste para entrar. La nueva aplica de inmediato para todo el equipo.</p>
+                <p class="error" aria-live="polite"></p>
+              </div>
+              <div class="acciones"><button type="submit" class="btn btn--secundario" id="btn-clave-nueva">Cambiar clave</button></div>
+            </form>
+          </details>
+
           <div class="tarjeta">
             <h2>Árboles registrados</h2>
             <p class="texto-suave">Puedes ocultar del muro cualquier registro inapropiado.</p>
