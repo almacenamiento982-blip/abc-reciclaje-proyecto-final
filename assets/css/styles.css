@@ -411,14 +411,16 @@ table.tabla { width: 100%; border-collapse: collapse; font-size: 0.9rem; min-wid
    Misceláneo
    -------------------------------------------------------------------------- */
 .lista-pasos { counter-reset: paso; list-style: none; padding: 0; margin: 0; display: grid; gap: 14px; }
-.lista-pasos li { position: relative; padding-left: 48px; }
-.lista-pasos li::before {
+.lista-pasos > li { position: relative; padding-left: 48px; }
+.lista-pasos > li::before {
   counter-increment: paso; content: counter(paso);
   position: absolute; left: 0; top: 0; width: 34px; height: 34px; border-radius: 50%;
   background: var(--amarillo); color: var(--verde-900); font-family: var(--fuente-titulo); font-weight: 800;
   display: grid; place-items: center;
 }
-.lista-pasos li strong { display: block; color: var(--verde-900); }
+.lista-pasos > li > strong { display: block; color: var(--verde-900); }
+.lista-pasos .lista-check li { padding-left: 28px; }
+.lista-pasos .lista-check li::before { content: "✔"; position: absolute; left: 0; top: 0; width: auto; height: auto; border-radius: 0; background: none; color: var(--verde-500); font-weight: 800; display: block; }
 .lista-check { list-style: none; padding: 0; margin: 0; display: grid; gap: 8px; }
 .lista-check li { padding-left: 28px; position: relative; }
 .lista-check li::before { content: "✔"; position: absolute; left: 0; color: var(--verde-500); font-weight: 800; }
