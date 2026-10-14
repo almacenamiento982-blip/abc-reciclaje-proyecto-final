@@ -83,11 +83,29 @@
         <td>${UI.escapar(e.titulo || "")}<br><small>${enlaceVideo(e)}${e.tamanoMB ? ` <span class="texto-suave">· ${UI.escapar(e.tamanoMB)} MB</span>` : ""}</small></td>
         <td><span class="estado ${UI.claseEstado(e.estado)}">${UI.escapar(e.estado)}</span></td>
         <td>${e.nota !== "" && e.nota != null ? "<strong>" + UI.escapar(e.nota) + "</strong>" : "–"}</td>
-        <td><button type="button" class="btn btn--primario btn--pequeno" data-calificar="${UI.escapar(e.radicado)}">${e.estado === "Calificado" ? "Editar" : "Calificar"}</button></td>
+        <td><div class="acciones" style="gap:6px;flex-wrap:nowrap"><button type="button" class="btn btn--primario btn--pequeno" data-calificar="${UI.escapar(e.radicado)}">${e.estado === "Calificado" ? "Editar" : "Calificar"}</button><button type="button" class="btn btn--peligro btn--pequeno" data-eliminar="${UI.escapar(e.radicado)}" title="Eliminar esta entrega y su video">Eliminar</button></div></td>
       </tr>`).join("");
     tb.querySelectorAll("[data-calificar]").forEach(b => b.addEventListener("click", () => abrirModal(b.dataset.calificar)));
+    tb.querySelectorAll("[data-eliminar]").forEach(b => b.addEventListener("click", () => eliminarEntrega(b.dataset.eliminar, b)));
   }
   ["f-texto", "f-estado", "f-zona"].forEach(id => $("#" + id).addEventListener("input", pintarEntregas));
+
+  async function eliminarEntrega(radicado, boton) {
+    const e = entregas.find(x => x.radicado === radicado);
+    if (!e) return;
+    const ok = window.confirm("¿Eliminar la entrega " + radicado + " de " + e.nombre + "? Se borrará la fila del registro y el video pasará a la papelera de Drive. Esta acción no se puede deshacer desde aquí.");
+    if (!ok) return;
+    boton.disabled = true; boton.textContent = "Eliminando…";
+    try {
+      await window.Api.docentes.eliminar({ clave, radicado });
+      entregas = entregas.filter(x => x.radicado !== radicado);
+      llenarZonas(); pintarEntregas();
+      UI.toast("Entrega " + radicado + " eliminada", "exito");
+    } catch (err) {
+      UI.toast(err.message, "error", 6000);
+      boton.disabled = false; boton.textContent = "Eliminar";
+    }
+  }
 
   /* ---------- Modal ---------- */
   const modal = $("#modal");
@@ -146,8 +164,17 @@
         <td>${UI.escapar([a.ciudad, a.pais].filter(Boolean).join(", "))}</td>
         <td>${UI.escapar(a.mensaje || "")}${a.fotoUrl ? ` <a href="${UI.escapar(a.fotoUrl)}" target="_blank" rel="noopener">foto ↗</a>` : ""}</td>
         <td><span class="estado ${a.publicar === "NO" ? "estado--devuelto" : "estado--calificado"}">${a.publicar === "NO" ? "Oculto" : "Visible"}</span></td>
-        <td><button type="button" class="btn btn--secundario btn--pequeno" data-arbol="${UI.escapar(a.id)}" data-publicar="${a.publicar === "NO" ? "1" : "0"}">${a.publicar === "NO" ? "Mostrar" : "Ocultar"}</button></td>
+        <td><div class="acciones" style="gap:6px;flex-wrap:nowrap"><button type="button" class="btn btn--secundario btn--pequeno" data-arbol="${UI.escapar(a.id)}" data-publicar="${a.publicar === "NO" ? "1" : "0"}">${a.publicar === "NO" ? "Mostrar" : "Ocultar"}</button><button type="button" class="btn btn--peligro btn--pequeno" data-eliminar-arbol="${UI.escapar(a.id)}">Eliminar</button></div></td>
       </tr>`).join("");
+    tb.querySelectorAll("[data-eliminar-arbol]").forEach(b => b.addEventListener("click", async () => {
+      const a = arboles.find(x => x.id === b.dataset.eliminarArbol);
+      if (!a || !window.confirm("¿Eliminar el árbol " + a.id + " de " + a.nombre + "? La foto pasará a la papelera de Drive.")) return;
+      b.disabled = true;
+      try {
+        await window.Api.docentes.eliminarArbol({ clave, id: a.id });
+        arboles = arboles.filter(x => x.id !== a.id); pintarArboles(); UI.toast("Árbol eliminado", "exito");
+      } catch (err) { UI.toast(err.message, "error"); b.disabled = false; }
+    }));
     tb.querySelectorAll("[data-arbol]").forEach(b => b.addEventListener("click", async () => {
       b.disabled = true;
       try {

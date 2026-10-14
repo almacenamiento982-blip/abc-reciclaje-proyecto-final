@@ -37,6 +37,8 @@ window.ABC_CONFIG = {
   // Tamaño de cada fragmento enviado al backend (bytes). 8 MB en binario
   // equivale a ~10.7 MB en base64, por debajo del límite de 50 MB de Apps Script.
   FRAGMENTO_BYTES: 8 * 1024 * 1024,
+  // Tamaño de bloque en la subida DIRECTA navegador → Drive (múltiplo de 256 KiB).
+  DIRECTO_FRAGMENTO_BYTES: 16 * 1024 * 1024,
   REINTENTOS_FRAGMENTO: 3,
 
   // Escala de calificación que usa el panel docente.

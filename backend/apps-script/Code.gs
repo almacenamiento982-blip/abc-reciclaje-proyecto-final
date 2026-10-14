@@ -26,7 +26,7 @@ var CONFIG = {
   FOTO_MAX_BYTES: 12 * 1024 * 1024,
   NOTA_MIN: 0,
   NOTA_MAX: 5,
-  VERSION: '0.1.0'
+  VERSION: '0.2.0'
 };
 
 var COL_ENTREGAS = ['Radicado', 'Fecha envio', 'Nombre completo', 'Documento', 'Correo', 'WhatsApp', 'Pais', 'Zona / Sede',
@@ -68,6 +68,7 @@ function doPost(e) {
       case 'ping': return json_({ ok: true, version: CONFIG.VERSION, modo: 'conectado' });
       case 'iniciar': return json_(iniciarSubida_(datos));
       case 'fragmento': return json_(recibirFragmento_(datos));
+      case 'estado_subida': return json_(estadoSubida_(datos));
       case 'finalizar': return json_(finalizarSubida_(datos));
       case 'enlace': return json_(registrarEnlace_(datos));
       case 'consultar': return json_(consultar_(datos));
@@ -76,6 +77,8 @@ function doPost(e) {
       case 'docentes_listar': return json_(docentesListar_(datos));
       case 'calificar': return json_(calificar_(datos));
       case 'publicar_arbol': return json_(publicarArbol_(datos));
+      case 'eliminar': return json_(eliminarEntrega_(datos));
+      case 'eliminar_arbol': return json_(eliminarArbol_(datos));
       default: return json_({ ok: false, error: 'Acción no reconocida: ' + datos.action });
     }
   } catch (err) {
@@ -141,14 +144,21 @@ function iniciarSubida_(d) {
   var nombreDrive = radicado + ' - ' + meta.nombre + ' - ' + meta.documento + ext;
 
   // Sesión reanudable en Drive
+  // Si el navegador indica su origen, la sesión se abre con esa cabecera
+  // "Origin": así Google acepta que ESE sitio suba los bytes directamente
+  // (CORS), sin pasar por Apps Script. Si no, se usa la vía de relevo.
+  var origen = String(d.origen || '').trim();
+  if (!/^https:\/\/[A-Za-z0-9.\-]+(:\d+)?$/.test(origen) && !/^http:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/.test(origen)) origen = '';
+  var cabeceras = {
+    Authorization: 'Bearer ' + ScriptApp.getOAuthToken(),
+    'X-Upload-Content-Type': mime,
+    'X-Upload-Content-Length': String(tamano)
+  };
+  if (origen) cabeceras.Origin = origen;
   var res = UrlFetchApp.fetch('https://www.googleapis.com/upload/drive/v3/files?uploadType=resumable&supportsAllDrives=true&fields=id,name,webViewLink', {
     method: 'post',
     contentType: 'application/json; charset=UTF-8',
-    headers: {
-      Authorization: 'Bearer ' + ScriptApp.getOAuthToken(),
-      'X-Upload-Content-Type': mime,
-      'X-Upload-Content-Length': String(tamano)
-    },
+    headers: cabeceras,
     payload: JSON.stringify({ name: nombreDrive, parents: [CONFIG.FOLDER_VIDEOS], description: 'Proyecto final · ' + meta.titulo }),
     muteHttpExceptions: true
   });
@@ -157,6 +167,9 @@ function iniciarSubida_(d) {
   var uri = headers.Location || headers.location;
   if (!uri) throw new Error('Drive no devolvió la URL de subida.');
 
+  // Comprobar que Google aceptó el origen (devuelve Access-Control-Allow-Origin)
+  var permiteDirecto = !!origen && String(headers['Access-Control-Allow-Origin'] || headers['access-control-allow-origin'] || '') === origen;
+
   var uploadId = Utilities.getUuid();
   var sesion = { uri: uri, radicado: radicado, mime: mime, total: tamano, nombre: nombreDrive, creado: Date.now(), archivoId: '' };
   guardarSesion_(uploadId, sesion);
@@ -164,7 +177,7 @@ function iniciarSubida_(d) {
   var fila = filaEntrega_(meta, radicado, 'archivo', '', '', Math.round(tamano / 1048576), 'Subiendo');
   hojaEntregas_().appendRow(fila);
 
-  return { ok: true, uploadId: uploadId, radicado: radicado };
+  return { ok: true, uploadId: uploadId, radicado: radicado, sesionUrl: permiteDirecto ? uri : '' };
 }
 
 function recibirFragmento_(d) {
@@ -199,18 +212,52 @@ function recibirFragmento_(d) {
   throw new Error('Drive rechazó el fragmento (' + code + '). Reintenta.');
 }
 
+/** Pregunta a Drive cuántos bytes tiene la sesión. */
+function consultarSesion_(s) {
+  var res = UrlFetchApp.fetch(s.uri, {
+    method: 'put', headers: { 'Content-Range': 'bytes */' + s.total }, muteHttpExceptions: true, followRedirects: false
+  });
+  var code = res.getResponseCode();
+  if (code === 200 || code === 201) {
+    var archivo = JSON.parse(res.getContentText());
+    return { recibido: s.total, completado: true, archivoId: archivo.id };
+  }
+  if (code === 308) {
+    var rango = res.getAllHeaders().Range || res.getAllHeaders().range || '';
+    return { recibido: rango ? Number(rango.split('-')[1]) + 1 : 0, completado: false, archivoId: '' };
+  }
+  if (code === 404 || code === 410) throw new Error('La sesión de subida expiró. Vuelve a enviar el video.');
+  throw new Error('No se pudo consultar el estado de la subida (' + code + ').');
+}
+
+function estadoSubida_(d) {
+  var s = leerSesion_(d.uploadId);
+  if (s.archivoId) return { ok: true, recibido: s.total, completado: true, archivoId: s.archivoId };
+  var est = consultarSesion_(s);
+  if (est.completado) { s.archivoId = est.archivoId; guardarSesion_(d.uploadId, s); marcarArchivo_(s.radicado, s.archivoId); }
+  return { ok: true, recibido: est.recibido, completado: est.completado, archivoId: est.archivoId };
+}
+
 function finalizarSubida_(d) {
   var s = leerSesion_(d.uploadId);
+  if (!s.archivoId && d.archivoId) {
+    // El navegador subió directo a Drive y nos entrega el ID: verificar que
+    // el archivo es el de esta sesión (nombre y carpeta) antes de aceptarlo.
+    var idCliente = String(d.archivoId).replace(/[^A-Za-z0-9_\-]/g, '');
+    try {
+      var f = DriveApp.getFileById(idCliente);
+      var enCarpeta = false, padres = f.getParents();
+      while (padres.hasNext()) if (padres.next().getId() === CONFIG.FOLDER_VIDEOS) enCarpeta = true;
+      if (enCarpeta && f.getName() === s.nombre) { s.archivoId = idCliente; guardarSesion_(d.uploadId, s); marcarArchivo_(s.radicado, s.archivoId); }
+    } catch (e) { /* se comprueba abajo con la sesión */ }
+  }
   if (!s.archivoId) {
-    // Consultar el estado de la sesión por si el último fragmento sí llegó
-    var res = UrlFetchApp.fetch(s.uri, {
-      method: 'put', headers: { 'Content-Range': 'bytes */' + s.total }, muteHttpExceptions: true, followRedirects: false
-    });
-    if (res.getResponseCode() === 200 || res.getResponseCode() === 201) {
-      s.archivoId = JSON.parse(res.getContentText()).id;
+    var est = consultarSesion_(s);
+    if (est.completado) {
+      s.archivoId = est.archivoId;
       marcarArchivo_(s.radicado, s.archivoId);
     } else {
-      throw new Error('La subida está incompleta. Selecciona de nuevo el mismo archivo para continuar.');
+      throw new Error('La subida está incompleta (' + Math.round(est.recibido / 1048576) + ' MB recibidos). Selecciona de nuevo el mismo archivo para continuar.');
     }
   }
   var url = '';
@@ -359,6 +406,31 @@ function publicarArbol_(d) {
   if (!fila) throw new Error('No existe el árbol ' + d.id + '.');
   hoja.getRange(fila, A.PUBLICAR + 1).setValue(d.publicar ? 'SI' : 'NO');
   return { ok: true };
+}
+
+function eliminarEntrega_(d) {
+  verificarClave_(d.clave);
+  var hoja = hojaEntregas_();
+  var radicado = limpiar_(d.radicado, 30);
+  var fila = buscarFila_(hoja, E.RADICADO, radicado);
+  if (!fila) throw new Error('No existe la entrega ' + radicado + '.');
+  var archivoId = String(hoja.getRange(fila, E.ARCHIVO_ID + 1).getValue() || '');
+  var papelera = false;
+  if (archivoId) { try { DriveApp.getFileById(archivoId).setTrashed(true); papelera = true; } catch (e) { /* ya no existe */ } }
+  hoja.deleteRow(fila);
+  return { ok: true, radicado: radicado, videoEnPapelera: papelera };
+}
+
+function eliminarArbol_(d) {
+  verificarClave_(d.clave);
+  var hoja = hojaArboles_();
+  var id = limpiar_(d.id, 30);
+  var fila = buscarFila_(hoja, A.ID, id);
+  if (!fila) throw new Error('No existe el árbol ' + id + '.');
+  var fotoId = String(hoja.getRange(fila, A.FOTO_ID + 1).getValue() || '');
+  if (fotoId) { try { DriveApp.getFileById(fotoId).setTrashed(true); } catch (e) { /* ya no existe */ } }
+  hoja.deleteRow(fila);
+  return { ok: true, id: id };
 }
 
 /* =========================================================================

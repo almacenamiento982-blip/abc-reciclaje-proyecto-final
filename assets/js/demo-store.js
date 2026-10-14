@@ -98,6 +98,13 @@
       return { ok: true, recibido: s.recibido, completado: s.recibido >= total };
     },
 
+    async estadoSubida({ uploadId }) {
+      await latencia();
+      const d = leer(); const s = d.subidas[uploadId];
+      if (!s) return { ok: false, error: "Sesión de subida no encontrada (demo)." };
+      return { ok: true, recibido: s.recibido, completado: s.recibido >= s.total, archivoId: "" };
+    },
+
     async finalizar({ uploadId }) {
       await latencia();
       const d = leer();
@@ -181,6 +188,28 @@
       const a = d.arboles.find(x => x.id === id);
       if (!a) return { ok: false, error: "No existe el árbol " + id + "." };
       a.publicar = publicar ? "SI" : "NO";
+      guardar(d);
+      return { ok: true };
+    },
+
+    async eliminar({ clave, radicado }) {
+      await latencia();
+      if (clave !== C.CLAVE_DEMO) return { ok: false, error: "Clave incorrecta." };
+      const d = leer();
+      const n = d.entregas.length;
+      d.entregas = d.entregas.filter(e => e.radicado !== radicado);
+      if (d.entregas.length === n) return { ok: false, error: "No existe la entrega " + radicado + "." };
+      guardar(d);
+      return { ok: true };
+    },
+
+    async eliminarArbol({ clave, id }) {
+      await latencia();
+      if (clave !== C.CLAVE_DEMO) return { ok: false, error: "Clave incorrecta." };
+      const d = leer();
+      const n = d.arboles.length;
+      d.arboles = d.arboles.filter(a => a.id !== id);
+      if (d.arboles.length === n) return { ok: false, error: "No existe el árbol " + id + "." };
       guardar(d);
       return { ok: true };
     },

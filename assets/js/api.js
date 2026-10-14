@@ -79,6 +79,7 @@
       iniciar: (p) => DEMO ? window.DemoStore.iniciar(p).then(verificar) : llamar("iniciar", p).then(verificar),
       fragmento: (p) => DEMO ? window.DemoStore.fragmento(p).then(verificar)
         : llamar("fragmento", p, { reintentos: 0, timeoutMs: 180000 }).then(verificar),
+      estado: (p) => DEMO ? window.DemoStore.estadoSubida(p).then(verificar) : llamar("estado_subida", p).then(verificar),
       finalizar: (p) => DEMO ? window.DemoStore.finalizar(p).then(verificar) : llamar("finalizar", p).then(verificar),
       enlace: (p) => DEMO ? window.DemoStore.enlace(p).then(verificar) : llamar("enlace", p).then(verificar),
       consultar: (p) => DEMO ? window.DemoStore.consultar(p).then(verificar) : llamar("consultar", p).then(verificar)
@@ -93,7 +94,9 @@
     docentes: {
       listar: (p) => DEMO ? window.DemoStore.docentesListar(p).then(verificar) : llamar("docentes_listar", p).then(verificar),
       calificar: (p) => DEMO ? window.DemoStore.calificar(p).then(verificar) : llamar("calificar", p).then(verificar),
-      publicarArbol: (p) => DEMO ? window.DemoStore.publicarArbol(p).then(verificar) : llamar("publicar_arbol", p).then(verificar)
+      publicarArbol: (p) => DEMO ? window.DemoStore.publicarArbol(p).then(verificar) : llamar("publicar_arbol", p).then(verificar),
+      eliminar: (p) => DEMO ? window.DemoStore.eliminar(p).then(verificar) : llamar("eliminar", p).then(verificar),
+      eliminarArbol: (p) => DEMO ? window.DemoStore.eliminarArbol(p).then(verificar) : llamar("eliminar_arbol", p).then(verificar)
     }
   };
 
