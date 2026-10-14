@@ -10,6 +10,11 @@
   UI.limpiarErroresAlEscribir(form);
 
   UI.iniciarPagina("calificacion").then(estado => {
+    if (!C.MOSTRAR_CALIFICACION) {
+      form.hidden = true;
+      resultados.innerHTML = '<div class="aviso aviso--info"><span class="aviso__icono">ℹ️</span><div><p><strong>La calificación del proyecto final se gestiona en Campus.</strong></p><p>Esta página no está activa. Consulta tu nota y la retroalimentación de tus profesores en la plataforma del curso.</p><p><a href="index.html">Volver al inicio</a></p></div></div>';
+      return;
+    }
     if (estado.modo !== "demo") form.querySelector(".acciones .texto-suave").remove();
     const params = new URLSearchParams(location.search);
     if (params.get("documento")) { doc.value = params.get("documento"); consultar(); }

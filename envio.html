@@ -20,7 +20,7 @@
       <div class="contenedor">
         <div class="heroe__marco" style="grid-template-columns:1fr">
           <div>
-            <span class="heroe__sobretitulo">Paso 2 de 3</span>
+            <span class="heroe__sobretitulo">Paso 2 de <span data-calificacion>3</span><span data-sin-calificacion hidden>2</span></span>
             <h1>Envía tu video</h1>
             <p>Llena tus datos y carga el archivo. Al terminar recibirás un número de radicado.</p>
           </div>
@@ -45,7 +45,7 @@
             <div class="campo">
               <label for="documento">Número de documento <span class="obligatorio">*</span></label>
               <input type="text" id="documento" name="documento" inputmode="numeric" maxlength="20" required>
-              <p class="ayuda">Con este número consultarás tu calificación.</p>
+              <p class="ayuda"><span data-calificacion>Con este número consultarás tu calificación.</span><span data-sin-calificacion hidden>Escríbelo sin puntos ni espacios.</span></p>
               <p class="error" aria-live="polite"></p>
             </div>
           </div>
@@ -183,7 +183,8 @@
             <div><p><strong>Modo demostración:</strong> esta entrega se guardó solo en tu navegador. El video no fue enviado a Google Drive porque el backend aún no está conectado.</p></div>
           </div>
           <div class="acciones" style="justify-content:center">
-            <a class="btn btn--primario" href="calificacion.html">Ir a consultar mi calificación</a>
+            <a class="btn btn--primario" href="calificacion.html" data-calificacion>Ir a consultar mi calificación</a>
+            <a class="btn btn--primario" href="index.html" data-sin-calificacion hidden>Volver al inicio</a>
             <button type="button" class="btn btn--secundario" id="btn-otro">Enviar otro video</button>
           </div>
         </div>

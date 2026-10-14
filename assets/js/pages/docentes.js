@@ -53,9 +53,10 @@
     sel.innerHTML = '<option value="">Todas</option>' + zonas.map(z => `<option>${UI.escapar(z)}</option>`).join("");
     sel.value = valor;
   }
+  const CAL = C.MOSTRAR_CALIFICACION;
   function filtradas() {
     const t = $("#f-texto").value.trim().toLowerCase();
-    const est = $("#f-estado").value; const zona = $("#f-zona").value;
+    const est = CAL && $("#f-estado") ? $("#f-estado").value : ""; const zona = $("#f-zona").value;
     return entregas.filter(e =>
       (!est || e.estado === est) && (!zona || e.zona === zona) &&
       (!t || [e.nombre, e.documento, e.radicado, e.titulo, e.correo].some(v => String(v || "").toLowerCase().includes(t)))
@@ -71,8 +72,10 @@
   function pintarEntregas() {
     const lista = filtradas();
     $("#c-total").textContent = entregas.length;
-    $("#c-calificadas").textContent = entregas.filter(e => e.estado === "Calificado").length;
-    $("#c-pendientes").textContent = entregas.filter(e => e.estado === "Recibido" || e.estado === "En revisión").length;
+    if (CAL) {
+      $("#c-calificadas").textContent = entregas.filter(e => e.estado === "Calificado").length;
+      $("#c-pendientes").textContent = entregas.filter(e => e.estado === "Recibido" || e.estado === "En revisión").length;
+    }
     const tb = $("#tabla-entregas");
     if (!lista.length) { tb.innerHTML = '<tr><td colspan="7" class="texto-suave">No hay entregas que coincidan.</td></tr>'; return; }
     tb.innerHTML = lista.map(e => `
@@ -82,13 +85,13 @@
         <td>${UI.escapar(e.zona || "")}<br><small class="texto-suave">${UI.escapar(e.pais || "")}</small></td>
         <td>${UI.escapar(e.titulo || "")}<br><small>${enlaceVideo(e)}${e.tamanoMB ? ` <span class="texto-suave">· ${UI.escapar(e.tamanoMB)} MB</span>` : ""}</small></td>
         <td><span class="estado ${UI.claseEstado(e.estado)}">${UI.escapar(e.estado)}</span></td>
-        <td>${e.nota !== "" && e.nota != null ? "<strong>" + UI.escapar(e.nota) + "</strong>" : "–"}</td>
-        <td><div class="acciones" style="gap:6px;flex-wrap:nowrap"><button type="button" class="btn btn--primario btn--pequeno" data-calificar="${UI.escapar(e.radicado)}">${e.estado === "Calificado" ? "Editar" : "Calificar"}</button><button type="button" class="btn btn--peligro btn--pequeno" data-eliminar="${UI.escapar(e.radicado)}" title="Eliminar esta entrega y su video">Eliminar</button></div></td>
+        ${CAL ? `<td>${e.nota !== "" && e.nota != null ? "<strong>" + UI.escapar(e.nota) + "</strong>" : "–"}</td>` : ""}
+        <td><div class="acciones" style="gap:6px;flex-wrap:nowrap">${CAL ? `<button type="button" class="btn btn--primario btn--pequeno" data-calificar="${UI.escapar(e.radicado)}">${e.estado === "Calificado" ? "Editar" : "Calificar"}</button>` : ""}<button type="button" class="btn btn--peligro btn--pequeno" data-eliminar="${UI.escapar(e.radicado)}" title="Eliminar esta entrega y su video">Eliminar</button></div></td>
       </tr>`).join("");
     tb.querySelectorAll("[data-calificar]").forEach(b => b.addEventListener("click", () => abrirModal(b.dataset.calificar)));
     tb.querySelectorAll("[data-eliminar]").forEach(b => b.addEventListener("click", () => eliminarEntrega(b.dataset.eliminar, b)));
   }
-  ["f-texto", "f-estado", "f-zona"].forEach(id => $("#" + id).addEventListener("input", pintarEntregas));
+  ["f-texto", "f-estado", "f-zona"].forEach(id => { const el = $("#" + id); if (el) el.addEventListener("input", pintarEntregas); });
 
   async function eliminarEntrega(radicado, boton) {
     const e = entregas.find(x => x.radicado === radicado);

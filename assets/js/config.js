@@ -20,6 +20,10 @@ window.ABC_CONFIG = {
   CURSO: "El ABC del Reciclaje",
   ORGANIZACION: "Campus · Fundación Internacional María Luisa de Moreno",
 
+  // La calificación y la retroalimentación se gestionan en otra plataforma.
+  // false = se ocultan el paso 3, la consulta y la calificación en el panel docente.
+  MOSTRAR_CALIFICACION: false,
+
   // Fecha límite de entrega (ISO). Vacío = no se muestra.
   FECHA_LIMITE: "",
 

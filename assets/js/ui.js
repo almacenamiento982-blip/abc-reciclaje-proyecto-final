@@ -9,9 +9,9 @@
     { id: "inicio", href: "index.html", texto: "Inicio" },
     { id: "instructivo", href: "instructivo.html", texto: "1 · Instructivo" },
     { id: "envio", href: "envio.html", texto: "2 · Enviar video" },
-    { id: "calificacion", href: "calificacion.html", texto: "3 · Mi calificación" },
+    { id: "calificacion", href: "calificacion.html", texto: "3 · Mi calificación", soloCalificacion: true },
     { id: "arboles", href: "arboles.html", texto: "Árboles sembrados" }
-  ];
+  ].filter(p => !p.soloCalificacion || C.MOSTRAR_CALIFICACION);
 
   function escapar(texto) {
     return String(texto == null ? "" : texto)
@@ -181,9 +181,17 @@
       opciones.map(o => `<option value="${escapar(o)}">${escapar(o)}</option>`).join("");
   }
 
+  /** Oculta los elementos marcados con data-calificacion cuando la calificación no se gestiona aquí. */
+  function aplicarCalificacion() {
+    if (C.MOSTRAR_CALIFICACION) return;
+    document.querySelectorAll("[data-calificacion]").forEach(el => el.remove());
+    document.querySelectorAll("[data-sin-calificacion]").forEach(el => el.removeAttribute("hidden"));
+  }
+
   async function iniciarPagina(activa) {
     renderCabecera(activa);
     renderPie();
+    aplicarCalificacion();
     const estado = await window.Api.estado();
     renderChipEstado(estado.modo);
     return estado;

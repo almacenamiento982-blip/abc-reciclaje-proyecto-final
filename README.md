@@ -19,7 +19,7 @@ registro en **Google Sheets**.
 | `index.html` | Estudiante | Portada con los 3 pasos y acceso al muro de árboles. |
 | `instructivo.html` | Estudiante | Paso 1: qué debe tener el video (texto borrador editable), requisitos técnicos, cómo enviarlo, preguntas frecuentes y las "prendas" de la estrategia de cobertura. |
 | `envio.html` | Estudiante | Paso 2: formulario con validaciones, carga del video por fragmentos con barra de progreso y reanudación, o envío por enlace. Entrega un **radicado**. |
-| `calificacion.html` | Estudiante | Paso 3: consulta por número de documento del estado, la nota y la retroalimentación. |
+| `calificacion.html` | Estudiante | Paso 3: consulta de nota y retroalimentación. **Desactivado** (`MOSTRAR_CALIFICACION: false` en `config.js`) porque la calificación se gestiona en Campus; el menú, el paso 3 y la calificación en el panel docente quedan ocultos y pueden reactivarse con ese interruptor. |
 | `arboles.html` | Todos | Muro tipo Padlet + mapa (Leaflet/OpenStreetMap) con los árboles sembrados, y formulario para registrar el propio (foto comprimida en el navegador, ubicación opcional). |
 | `docentes.html` | Docentes | Panel con clave: lista de entregas, filtros, enlace al video en Drive, calificación con retroalimentación, eliminación de entregas (el video va a la papelera de Drive), moderación y eliminación en el muro, y descarga CSV. |
 

@@ -22,7 +22,7 @@
           <div>
             <span class="heroe__sobretitulo">Curso · Proyecto final</span>
             <h1>El ABC del<br>Reciclaje</h1>
-            <p>Llegó el momento de mostrar lo aprendido. Graba tu video de 2 a 3 minutos, envíalo desde aquí y consulta la retroalimentación de tus profesores en el mismo lugar.</p>
+            <p>Llegó el momento de mostrar lo aprendido. Graba tu video de 2 a 3 minutos y envíalo desde aquí: en menos de cinco minutos tendrás tu constancia de entrega.</p>
             <div class="heroe__acciones">
               <a class="btn btn--acento" href="envio.html">Enviar mi video</a>
               <a class="btn btn--contorno" href="instructivo.html">Leer el instructivo</a>
@@ -37,9 +37,9 @@
       <div class="contenedor">
         <div data-aviso-modo></div>
         <div data-fecha-limite></div>
-        <h2 class="texto-centro">Tres pasos para completar tu proyecto</h2>
+        <h2 class="texto-centro"><span data-calificacion>Tres pasos</span><span data-sin-calificacion hidden>Dos pasos</span> para completar tu proyecto</h2>
         <p class="texto-centro texto-suave mb-2">El mismo recorrido que ves en Campus, en una sola herramienta.</p>
-        <div class="rejilla rejilla--3">
+        <div class="rejilla rejilla--3" data-rejilla-pasos>
           <a class="tarjeta paso" href="instructivo.html">
             <span class="paso__numero">1</span>
             <h3>Instructivo</h3>
@@ -52,7 +52,7 @@
             <p>Carga el archivo directamente desde tu celular o computador. Recibes un número de radicado como constancia.</p>
             <span class="paso__cta">Enviar ahora →</span>
           </a>
-          <a class="tarjeta paso" href="calificacion.html">
+          <a class="tarjeta paso" href="calificacion.html" data-calificacion>
             <span class="paso__numero paso__numero--azul">3</span>
             <h3>Calificación</h3>
             <p>Consulta con tu número de documento el estado de tu entrega, la nota y la retroalimentación de tus profesores.</p>
@@ -87,8 +87,9 @@
   <script src="assets/js/ui.js"></script>
   <script>
     (async function () {
-      const estado = await UI.iniciarPagina("inicio");
       const C = window.ABC_CONFIG;
+      if (!C.MOSTRAR_CALIFICACION) document.querySelector("[data-rejilla-pasos]").classList.replace("rejilla--3", "rejilla--2");
+      const estado = await UI.iniciarPagina("inicio");
       const aviso = document.querySelector("[data-aviso-modo]");
       if (estado.modo === "demo") {
         aviso.innerHTML = '<div class="aviso aviso--alerta mb-2"><span class="aviso__icono">🧪</span><div><p><strong>Modo demostración.</strong> Puedes probar todo el recorrido, pero los envíos se guardan únicamente en este navegador y <strong>no llegan a Google Drive</strong>. Para activar el almacenamiento real hay que publicar el script de Google y pegar su URL en <code>assets/js/config.js</code>.</p></div></div>';

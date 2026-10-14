@@ -21,8 +21,8 @@
         <div class="heroe__marco" style="grid-template-columns:1fr">
           <div>
             <span class="heroe__sobretitulo">Equipo docente</span>
-            <h1>Panel de calificación</h1>
-            <p>Revisa las entregas, abre cada video y registra la nota y la retroalimentación. Lo que escribas aquí es lo que el estudiante ve en el paso 3.</p>
+            <h1><span data-calificacion>Panel de calificación</span><span data-sin-calificacion hidden>Panel de entregas</span></h1>
+            <p><span data-calificacion>Revisa las entregas, abre cada video y registra la nota y la retroalimentación. Lo que escribas aquí es lo que el estudiante ve en el paso 3.</span><span data-sin-calificacion hidden>Revisa las entregas recibidas, abre cada video en Drive, descarga el listado y elimina registros erróneos. La calificación se gestiona en Campus.</span></p>
           </div>
         </div>
       </div>
@@ -38,7 +38,7 @@
               <p class="error" aria-live="polite"></p>
             </div>
             <div class="campo">
-              <label for="docente">Tu nombre (aparece en la calificación)</label>
+              <label for="docente">Tu nombre <span data-calificacion>(aparece en la calificación)</span><span data-sin-calificacion hidden>(opcional)</span></label>
               <input type="text" id="docente" maxlength="80">
               <p class="error" aria-live="polite"></p>
             </div>
@@ -52,21 +52,21 @@
         <div id="panel" hidden style="display:grid;gap:20px">
           <div class="contador">
             <div class="contador__item"><strong id="c-total">0</strong><span>entregas</span></div>
-            <div class="contador__item"><strong id="c-pendientes">0</strong><span>por calificar</span></div>
-            <div class="contador__item"><strong id="c-calificadas">0</strong><span>calificadas</span></div>
+            <div class="contador__item" data-calificacion><strong id="c-pendientes">0</strong><span>por calificar</span></div>
+            <div class="contador__item" data-calificacion><strong id="c-calificadas">0</strong><span>calificadas</span></div>
           </div>
 
           <div class="tarjeta">
             <h2>Entregas</h2>
             <div class="filtros mb-2">
               <div class="campo"><label for="f-texto">Buscar</label><input type="text" id="f-texto" placeholder="Nombre, documento, radicado o título"></div>
-              <div class="campo"><label for="f-estado">Estado</label><select id="f-estado"><option value="">Todos</option><option>Recibido</option><option>En revisión</option><option>Calificado</option><option>Devuelto</option></select></div>
+              <div class="campo" data-calificacion><label for="f-estado">Estado</label><select id="f-estado"><option value="">Todos</option><option>Recibido</option><option>En revisión</option><option>Calificado</option><option>Devuelto</option></select></div>
               <div class="campo"><label for="f-zona">Zona</label><select id="f-zona"><option value="">Todas</option></select></div>
               <div class="acciones"><button type="button" class="btn btn--secundario" id="btn-csv">Descargar CSV</button><button type="button" class="btn btn--secundario" id="btn-recargar">Actualizar</button></div>
             </div>
             <div class="tabla-contenedor">
               <table class="tabla">
-                <thead><tr><th>Radicado</th><th>Estudiante</th><th>Zona · País</th><th>Video</th><th>Estado</th><th>Nota</th><th></th></tr></thead>
+                <thead><tr><th>Radicado</th><th>Estudiante</th><th>Zona · País</th><th>Video</th><th>Estado</th><th data-calificacion>Nota</th><th></th></tr></thead>
                 <tbody id="tabla-entregas"></tbody>
               </table>
             </div>
