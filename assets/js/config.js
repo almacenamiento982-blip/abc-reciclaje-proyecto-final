@@ -29,7 +29,7 @@ window.ABC_CONFIG = {
 
   // Límites del video del proyecto final.
   VIDEO_MAX_MB: 500,
-  VIDEO_DURACION_TEXTO: "entre 2 y 3 minutos",
+  VIDEO_DURACION_TEXTO: "mínimo 1 minuto y máximo 4 minutos",
   VIDEO_TIPOS: ["video/mp4", "video/quicktime", "video/webm", "video/x-m4v", "video/3gpp", "video/x-matroska"],
   VIDEO_EXTENSIONES: [".mp4", ".mov", ".webm", ".m4v", ".3gp", ".mkv"],
 

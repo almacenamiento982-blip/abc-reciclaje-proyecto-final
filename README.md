@@ -17,7 +17,7 @@ registro en **Google Sheets**.
 | Página | Para quién | Qué hace |
 |---|---|---|
 | `index.html` | Estudiante | Portada con los 3 pasos y acceso al muro de árboles. |
-| `instructivo.html` | Estudiante | Paso 1: qué debe tener el video (texto borrador editable), requisitos técnicos, cómo enviarlo, preguntas frecuentes y las "prendas" de la estrategia de cobertura. |
+| `instructivo.html` | Estudiante | Paso 1: el instructivo oficial del curso ("CAMPUS Paso 1: Instrucciones"): ejemplos de proyecto, las 4 preguntas del video, los 5 pasos, duración de 1 a 4 minutos, detalles técnicos, preguntas frecuentes y las "prendas" de la estrategia de cobertura. |
 | `envio.html` | Estudiante | Paso 2: formulario con validaciones, carga del video por fragmentos con barra de progreso y reanudación, o envío por enlace. Entrega un **radicado**. |
 | `calificacion.html` | Estudiante | Paso 3: consulta de nota y retroalimentación. **Desactivado** (`MOSTRAR_CALIFICACION: false` en `config.js`) porque la calificación se gestiona en Campus; el menú, el paso 3 y la calificación en el panel docente quedan ocultos y pueden reactivarse con ese interruptor. |
 | `arboles.html` | Todos | Muro tipo Padlet + mapa (Leaflet/OpenStreetMap) con los árboles sembrados, y formulario para registrar el propio (foto comprimida en el navegador, ubicación opcional). |
@@ -115,7 +115,6 @@ paso 3 lee la hoja.
 
 ## 7. Pendientes y decisiones que corresponden al equipo del curso
 
-- Redactar el contenido definitivo del instructivo (sección marcada como *borrador editable*).
 - Confirmar la escala de calificación (`NOTA_MAX` en `config.js` y `Code.gs`, por defecto 0 a 5).
 - Confirmar fecha límite de entrega (`FECHA_LIMITE`) y lista de zonas si se quiere un desplegable.
 - Entregar el logo de la fundación para la cabecera (`LOGO_URL`).
