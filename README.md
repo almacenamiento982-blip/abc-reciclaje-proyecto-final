@@ -150,5 +150,15 @@ lanzar varias subidas a la vez. Ejemplo:
 python docs/simular_subidas.py video-3min.mp4 10 --paralelo 2 --mbps 12 --borrar <clave>
 ```
 
-Resultados del 14-oct-2026 con un video de 3 minutos en 1080p (184,6 MB): ver la sección
-"Resultados de las pruebas de carga" más abajo.
+Resultados del 14-oct-2026 con un video de 3 minutos en 1080p (184,6 MB), subida directa a Drive:
+
+| Escenario | Correctas | Tiempo por video | Velocidad efectiva |
+|---|---|---|---|
+| PC con fibra (~33 Mbps de subida), 10 videos seguidos | 9/10 · la fallida fue un corte de red en el simulador sin reintentos (el navegador sí reintenta y reanuda; ya corregido en el simulador) | 49 a 58 s (mediana 53 s) | 33,5 Mbps |
+| Celular en 4G simulado (12 Mbps por subida), 10 videos de dos en dos | 10/10 | 136 a 141 s (mediana 138 s) | 11,8 Mbps |
+| 5 estudiantes subiendo a la vez (video de 20,6 MB) | 5/5 | 12 a 15 s | 25 a 35 Mbps |
+
+El backend (abrir sesión + confirmar) gasta entre 5 y 8 s por video sin importar el tamaño; el resto
+es el ancho de banda de subida del estudiante hacia Google. Regla práctica: **un video de 3 minutos
+tarda ~2,5 min en 4G y ~1 min en una buena fibra**. Con red lenta (3 Mbps) serían unos 8 minutos,
+y la subida se reanuda si se corta.
