@@ -81,18 +81,37 @@ def subir(ruta, idx, origen, mbps, resultados):
             while pos < tam:
                 datos = fh.read(BLOQUE)
                 fin = pos + len(datos) - 1
-                cuerpo = CuerpoLimitado(datos, lim)
-                req = urllib.request.Request(sesion, data=cuerpo, method="PUT",
-                                             headers={"Origin": origen, "Content-Type": "video/mp4",
-                                                      "Content-Range": "bytes %d-%d/%d" % (pos, fin, tam),
-                                                      "Content-Length": str(len(datos))})
-                try:
-                    resp = urllib.request.urlopen(req, timeout=600)
-                    codigo = resp.status
-                    cuerpo_resp = resp.read().decode()
-                except urllib.error.HTTPError as e:
-                    codigo = e.code
-                    cuerpo_resp = e.read().decode()
+                # Igual que el navegador: hasta 3 reintentos por bloque ante fallos de red
+                intento = 0
+                while True:
+                    cuerpo = CuerpoLimitado(datos, lim)
+                    req = urllib.request.Request(sesion, data=cuerpo, method="PUT",
+                                                 headers={"Origin": origen, "Content-Type": "video/mp4",
+                                                          "Content-Range": "bytes %d-%d/%d" % (pos, fin, tam),
+                                                          "Content-Length": str(len(datos))})
+                    try:
+                        resp = urllib.request.urlopen(req, timeout=120)
+                        codigo = resp.status
+                        cuerpo_resp = resp.read().decode()
+                        break
+                    except urllib.error.HTTPError as e:
+                        codigo = e.code
+                        cuerpo_resp = e.read().decode()
+                        break
+                    except Exception as e:  # red / SSL / tiempo agotado
+                        intento += 1
+                        if intento > 3:
+                            raise
+                        print("  #%02d reintento %d del bloque %d (%s)" % (idx, intento, pos // BLOQUE, e), flush=True)
+                        time.sleep(2 * intento)
+                        est = post({"action": "estado_subida", "uploadId": upload_id})
+                        if est.get("archivoId"):
+                            archivo_id, pos, datos = est["archivoId"], tam, b""
+                            break
+                        if est.get("recibido", pos) != pos:
+                            fh.seek(est["recibido"]); pos = est["recibido"]; datos = fh.read(BLOQUE); fin = pos + len(datos) - 1
+                if not datos:
+                    break
                 if codigo in (200, 201):
                     archivo_id = json.loads(cuerpo_resp).get("id", "")
                 elif codigo != 308:

@@ -107,7 +107,7 @@ paso 3 lee la hoja.
 
 - Proyecto de Apps Script: `ABC Reciclaje - Entregas Proyecto Final` (dentro de la carpeta del proyecto en Drive).
 - Implementación activa: `v2 - subida directa y eliminar` (misma URL que la v1). La URL `/exec` está en `assets/js/config.js`.
-- La clave del panel docente se generó al ejecutar `configurar()` y está en *Configuración del proyecto → Propiedades del script → `DOCENTE_CLAVE`*. Compártela solo con el equipo docente.
+- La clave del panel docente está en *Configuración del proyecto → Propiedades del script → `DOCENTE_CLAVE`* y se puede cambiar desde el propio panel ("Cambiar la clave del panel", conociendo la actual). Compártela solo con el equipo docente: quien la tenga puede ver y eliminar entregas.
 - Para publicar cambios del script: editar `backend/apps-script/Code.gs` y ejecutar
   `npx @google/clasp push -f` y luego `npx @google/clasp deploy -i <deploymentId> -d "v2"` desde esa carpeta
   (requiere `clasp login` con la cuenta dueña). Guía completa: [backend/apps-script/README.md](backend/apps-script/README.md).
@@ -139,3 +139,16 @@ abc-reciclaje-proyecto-final/
 ├── docs/DESPLIEGUE.md          # GitHub Pages, Render, dominio
 └── .nojekyll                   # GitHub Pages sirve los archivos tal cual
 ```
+
+## 9. Pruebas de carga (simulador)
+
+`docs/simular_subidas.py` reproduce el flujo del navegador (iniciar → bloques directos a Drive →
+finalizar) para N videos, con opción de limitar la velocidad para simular un celular en 4G y de
+lanzar varias subidas a la vez. Ejemplo:
+
+```bash
+python docs/simular_subidas.py video-3min.mp4 10 --paralelo 2 --mbps 12 --borrar <clave>
+```
+
+Resultados del 14-oct-2026 con un video de 3 minutos en 1080p (184,6 MB): ver la sección
+"Resultados de las pruebas de carga" más abajo.
