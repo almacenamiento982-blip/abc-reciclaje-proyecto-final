@@ -67,7 +67,7 @@ y [docs/DESPLIEGUE.md](docs/DESPLIEGUE.md).
 Los docentes pueden calificar desde el panel web **o** directamente en la hoja de cálculo: el
 paso 3 lee la hoja.
 
-## 4. Pruebas realizadas (13-oct-2026, modo demostración, Chromium vía Playwright)
+## 4. Pruebas realizadas (13 y 14-oct-2026, Chromium vía Playwright)
 
 - Carga de las 6 páginas sin errores en consola; escritorio (1280 px) y móvil (390 px) sin
   desplazamiento horizontal; menú móvil funcional.
@@ -81,6 +81,10 @@ paso 3 lee la hoja.
   filtros por zona/estado, calificación guardada (nota 4,8) y reflejada en el paso 3.
 - Muro de árboles: foto de 2400×1800 px reducida a 1600×1200 (≈17 KB), registro publicado,
   contador y mapa actualizados (4 marcadores).
+- **Con el backend real (sitio publicado):** `ping`, `arboles` y `consultar` responden JSON; envío de un
+  MP4 de 20,6 MB en 3 fragmentos (≈70 s), radicado `ABC-2026-00001`; archivo en Drive con el mismo
+  MD5 y tamaño que el original; fila completa en la hoja; calificación 4,5 guardada desde el panel
+  docente y mostrada al estudiante en el paso 3.
 
 ## 5. Estado de cada funcionalidad
 
@@ -89,22 +93,21 @@ paso 3 lee la hoja.
 | Interfaz completa, responsive, con la línea gráfica del banner | ✅ Implementada y probada |
 | Validaciones, mensajes de éxito/error, borrador local, reanudación de subida | ✅ Implementada y probada (modo demo) |
 | Carpetas de Drive y hoja de cálculo creadas en la cuenta de 5 TB | ✅ Creadas con Composio (IDs en `Code.gs`) |
-| Backend Apps Script (subida a Drive, registro, consulta, panel) | ✅ Escrito · ⏳ **Pendiente de publicar** (requiere iniciar sesión en Google; ver más abajo) |
-| Almacenamiento real de videos en Drive | ⏳ Depende del punto anterior. Hasta entonces: modo demostración |
+| Backend Apps Script (subida a Drive, registro, consulta, panel) | ✅ Publicado con clasp (implementación `v1 - prototipo`) y autorizado por el dueño de la cuenta |
+| Almacenamiento real de videos en Drive | ✅ Probado el 14-oct-2026: video de 20,6 MB subido en 3 fragmentos desde el sitio publicado, MD5 idéntico al original en `01 Videos proyecto final`, fila `ABC-2026-00001` en la hoja, calificación desde el panel y visible en el paso 3 |
 | Publicación en GitHub Pages | ✅ Publicado |
 | Google Form de respaldo | ⏳ Opcional. Composio no tiene Google Forms conectado y la API de Forms no permite crear preguntas de carga de archivos: se crea a mano y se pega en `FORM_RESPALDO_URL` |
 | Dominio propio / Render | ⏳ No necesario por ahora (ver `docs/DESPLIEGUE.md`) |
 
-## 6. Qué falta para activar el almacenamiento real (10 minutos)
+## 6. Backend publicado
 
-1. Con la cuenta `almacenamiento982@gmail.com`, crear el proyecto en <https://script.google.com>
-   y pegar `backend/apps-script/Code.gs` y `appsscript.json`.
-2. Ejecutar `configurar()` una vez (autorizar permisos; copiar la clave docente del registro).
-3. Implementar como **Aplicación web** (Ejecutar como: Yo · Acceso: Cualquier usuario) y copiar la URL `/exec`.
-4. Pegar la URL en `assets/js/config.js` → `APPS_SCRIPT_URL` y subir el cambio al repositorio.
-5. Probar un envío real y comprobar el archivo en Drive y la fila en la hoja.
-
-Guía paso a paso: [backend/apps-script/README.md](backend/apps-script/README.md).
+- Proyecto de Apps Script: `ABC Reciclaje - Entregas Proyecto Final` (dentro de la carpeta del proyecto en Drive).
+- Implementación activa: `v1 - prototipo`. La URL `/exec` está en `assets/js/config.js`.
+- La clave del panel docente se generó al ejecutar `configurar()` y está en *Configuración del proyecto → Propiedades del script → `DOCENTE_CLAVE`*. Compártela solo con el equipo docente.
+- Para publicar cambios del script: editar `backend/apps-script/Code.gs` y ejecutar
+  `npx @google/clasp push -f` y luego `npx @google/clasp deploy -i <deploymentId> -d "v2"` desde esa carpeta
+  (requiere `clasp login` con la cuenta dueña). Guía completa: [backend/apps-script/README.md](backend/apps-script/README.md).
+- Las entregas de prueba (`ABC-2026-00001`, documento 900100200) se pueden borrar de la hoja y de Drive antes de abrir a los estudiantes.
 
 ## 7. Pendientes y decisiones que corresponden al equipo del curso
 
