@@ -26,7 +26,7 @@ var CONFIG = {
   FOTO_MAX_BYTES: 12 * 1024 * 1024,
   NOTA_MIN: 0,
   NOTA_MAX: 5,
-  VERSION: '0.3.1'
+  VERSION: '0.3.2'
 };
 
 var COL_ENTREGAS = ['Radicado', 'Fecha envio', 'Nombre completo', 'Documento', 'Correo', 'WhatsApp', 'Pais', 'Zona / Sede',
@@ -34,14 +34,14 @@ var COL_ENTREGAS = ['Radicado', 'Fecha envio', 'Nombre completo', 'Documento', '
   'Estado', 'Nota', 'Retroalimentacion', 'Docente que califica', 'Fecha calificacion', 'Autoriza uso', 'Origen',
   'Como te sentiste'];
 var COL_ARBOLES = ['ID', 'Fecha', 'Nombre', 'Documento', 'Correo', 'Ciudad', 'Pais', 'Latitud', 'Longitud', 'Mensaje',
-  'Foto Drive ID', 'Foto URL', 'Publicar', 'Origen'];
+  'Foto Drive ID', 'Foto URL', 'Publicar', 'Origen', 'Especie'];
 
 // Índices (base 0) de las columnas de Entregas
 var E = { RADICADO: 0, FECHA: 1, NOMBRE: 2, DOCUMENTO: 3, CORREO: 4, WHATSAPP: 5, PAIS: 6, ZONA: 7, GRUPO: 8, TITULO: 9,
   DESCRIPCION: 10, TIPO: 11, ARCHIVO_ID: 12, ENLACE: 13, TAMANO: 14, ESTADO: 15, NOTA: 16, RETRO: 17, DOCENTE: 18,
   FECHA_CAL: 19, AUTORIZA: 20, ORIGEN: 21, SENTIMIENTO: 22 };
 var A = { ID: 0, FECHA: 1, NOMBRE: 2, DOCUMENTO: 3, CORREO: 4, CIUDAD: 5, PAIS: 6, LAT: 7, LNG: 8, MENSAJE: 9,
-  FOTO_ID: 10, FOTO_URL: 11, PUBLICAR: 12, ORIGEN: 13 };
+  FOTO_ID: 10, FOTO_URL: 11, PUBLICAR: 12, ORIGEN: 13, ESPECIE: 14 };
 
 /* =========================================================================
    Puntos de entrada
@@ -328,7 +328,7 @@ function listarArboles_() {
   var arboles = filas.filter(function (f) { return f[A.ID] && String(f[A.PUBLICAR]).toUpperCase() !== 'NO'; })
     .map(function (f) {
       return { id: f[A.ID], fecha: iso_(f[A.FECHA]), nombre: f[A.NOMBRE], ciudad: f[A.CIUDAD], pais: f[A.PAIS],
-        lat: f[A.LAT], lng: f[A.LNG], mensaje: f[A.MENSAJE], fotoUrl: f[A.FOTO_URL] };
+        lat: f[A.LAT], lng: f[A.LNG], mensaje: f[A.MENSAJE], fotoUrl: f[A.FOTO_URL], especie: f[A.ESPECIE] || '' };
     }).reverse();
   return { ok: true, arboles: arboles };
 }
@@ -338,11 +338,13 @@ function registrarArbol_(d) {
   var meta = {
     nombre: limpiar_(m.nombre, 120), documento: limpiar_(m.documento, 20), correo: limpiar_(m.correo, 120),
     ciudad: limpiar_(m.ciudad, 80), pais: limpiar_(m.pais, 60), mensaje: limpiar_(m.mensaje, 300),
+    especie: limpiar_(m.especie, 80),
     lat: m.lat === '' || m.lat == null ? '' : Number(m.lat), lng: m.lng === '' || m.lng == null ? '' : Number(m.lng)
   };
   if (meta.nombre.length < 3) throw new Error('El nombre es obligatorio.');
   if (normalizarDoc_(meta.documento).length < 4) throw new Error('El documento es obligatorio.');
   if (!meta.ciudad || !meta.pais) throw new Error('Ciudad y país son obligatorios.');
+  if (meta.especie.length < 2) throw new Error('El nombre de la planta o especie es obligatorio.');
   var foto = d.foto || {};
   if (!foto.datos) throw new Error('Falta la foto.');
   var bytes = Utilities.base64Decode(String(foto.datos));
@@ -358,6 +360,7 @@ function registrarArbol_(d) {
   fila[A.ID] = id; fila[A.FECHA] = new Date(); fila[A.NOMBRE] = meta.nombre; fila[A.DOCUMENTO] = meta.documento; fila[A.CORREO] = meta.correo;
   fila[A.CIUDAD] = meta.ciudad; fila[A.PAIS] = meta.pais; fila[A.LAT] = meta.lat; fila[A.LNG] = meta.lng; fila[A.MENSAJE] = meta.mensaje;
   fila[A.FOTO_ID] = archivo.getId(); fila[A.FOTO_URL] = fotoUrl; fila[A.PUBLICAR] = 'SI'; fila[A.ORIGEN] = 'web';
+  fila[A.ESPECIE] = meta.especie;
   hojaArboles_().appendRow(fila);
   return { ok: true, id: id, fotoUrl: fotoUrl };
 }
@@ -384,7 +387,7 @@ function docentesListar_(d) {
   }).reverse();
   var arboles = hojaArboles_().getDataRange().getValues().slice(1).filter(function (f) { return f[A.ID]; }).map(function (f) {
     return { id: f[A.ID], fecha: iso_(f[A.FECHA]), nombre: f[A.NOMBRE], documento: f[A.DOCUMENTO], ciudad: f[A.CIUDAD], pais: f[A.PAIS],
-      mensaje: f[A.MENSAJE], fotoUrl: f[A.FOTO_URL], publicar: String(f[A.PUBLICAR] || 'SI').toUpperCase() };
+      mensaje: f[A.MENSAJE], fotoUrl: f[A.FOTO_URL], publicar: String(f[A.PUBLICAR] || 'SI').toUpperCase(), especie: f[A.ESPECIE] || '' };
   }).reverse();
   return { ok: true, entregas: entregas, arboles: arboles };
 }

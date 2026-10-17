@@ -3,8 +3,8 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Árboles sembrados · El ABC del Reciclaje</title>
-  <meta name="description" content="Muro y mapa con los árboles sembrados por los estudiantes del curso.">
+  <title>Árboles EcoHéroes · El ABC del Reciclaje</title>
+  <meta name="description" content="Mapa del mundo con los árboles sembrados por los EcoHéroes del curso El ABC del Reciclaje.">
   <link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -22,8 +22,8 @@
         <div class="heroe__marco">
           <div>
             <span class="heroe__sobretitulo">🧤 Los guantes · reto extra</span>
-            <h1>Árboles sembrados</h1>
-            <p>Cada árbol que sembramos es una prenda más del traje. Mira dónde están creciendo los árboles del curso y suma el tuyo.</p>
+            <h1>Árboles sembrados por los EcoHéroes en el mundo</h1>
+            <p>Cada árbol que sembramos es una prenda más del traje. Mira en el mapa del mundo dónde están creciendo los árboles del curso y suma el tuyo.</p>
             <div class="heroe__acciones">
               <a class="btn btn--acento" href="#registrar">Registrar mi árbol</a>
             </div>
@@ -40,11 +40,11 @@
       <div class="contenedor" style="display:grid;gap:24px">
         <div data-aviso-modo></div>
         <div>
-          <h2>Mapa</h2>
+          <h2>Mapa del mundo</h2>
           <div class="mapa" id="mapa" role="region" aria-label="Mapa de árboles sembrados"></div>
         </div>
         <div>
-          <h2>Muro</h2>
+          <h2>Fotos de los árboles</h2>
           <div class="galeria" id="galeria" aria-live="polite"><p class="texto-suave">Cargando…</p></div>
         </div>
       </div>
@@ -54,20 +54,26 @@
       <div class="contenedor seccion--estrecha">
         <form class="tarjeta tarjeta--destacada formulario" id="form-arbol" novalidate>
           <h2 class="mb-0">Registrar mi árbol</h2>
-          <p class="texto-suave mb-0">Sube una foto de tu árbol. Aparecerá en el muro con tu nombre, ciudad y mensaje.</p>
+          <p class="texto-suave mb-0">Sube una foto de tu árbol. Aparecerá en el mapa del mundo con tu nombre, la especie, la ciudad y tu mensaje.</p>
 
           <div class="campo--fila">
             <div class="campo">
-              <label for="a-nombre">Nombre <span class="obligatorio">*</span></label>
+              <label for="a-nombre">Nombre completo <span class="obligatorio">*</span></label>
               <input type="text" id="a-nombre" maxlength="120" autocomplete="name" required>
               <p class="error" aria-live="polite"></p>
             </div>
             <div class="campo">
               <label for="a-documento">Número de documento <span class="obligatorio">*</span></label>
               <input type="text" id="a-documento" inputmode="numeric" maxlength="20" required>
-              <p class="ayuda">No se muestra en el muro; sirve para asociar el árbol con tu curso.</p>
+              <p class="ayuda">No se muestra públicamente; sirve para asociar el árbol con tu curso.</p>
               <p class="error" aria-live="polite"></p>
             </div>
+          </div>
+          <div class="campo">
+            <label for="a-especie">Nombre de la planta o especie <span class="obligatorio">*</span></label>
+            <input type="text" id="a-especie" maxlength="80" placeholder="Ejemplo: guayacán, mango, roble, jacarandá" required>
+            <p class="ayuda">Si no conoces el nombre científico, escribe el nombre común.</p>
+            <p class="error" aria-live="polite"></p>
           </div>
           <div class="campo--fila">
             <div class="campo">
@@ -106,12 +112,12 @@
           <div class="campo campo--check">
             <input type="checkbox" id="a-autoriza">
             <div>
-              <label for="a-autoriza">Autorizo que la foto, mi nombre, ciudad y mensaje se muestren públicamente en el muro. <span class="obligatorio">*</span></label>
+              <label for="a-autoriza">Autorizo que la foto, mi nombre, la especie, la ciudad y mi mensaje se muestren públicamente en el mapa de árboles. <span class="obligatorio">*</span></label>
               <p class="error" aria-live="polite"></p>
             </div>
           </div>
           <div class="acciones">
-            <button type="submit" class="btn btn--acento" id="btn-arbol">Publicar en el muro</button>
+            <button type="submit" class="btn btn--acento" id="btn-arbol">Publicar mi árbol</button>
           </div>
           <div id="arbol-resultado"></div>
         </form>

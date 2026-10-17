@@ -10,7 +10,7 @@
     { id: "instructivo", href: "instructivo.html", texto: "1 · Instructivo" },
     { id: "envio", href: "envio.html", texto: "2 · Enviar video" },
     { id: "calificacion", href: "calificacion.html", texto: "3 · Mi calificación", soloCalificacion: true },
-    { id: "arboles", href: "arboles.html", texto: "Árboles sembrados" }
+    { id: "arboles", href: "arboles.html", texto: "Árboles EcoHéroes" }
   ].filter(p => !p.soloCalificacion || C.MOSTRAR_CALIFICACION);
 
   function escapar(texto) {

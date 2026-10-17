@@ -37,9 +37,9 @@
         }
       ],
       arboles: [
-        { id: "ARB-00001", fecha: hace(10), nombre: "Ejemplo · Medellín", documento: "1000", ciudad: "Medellín", pais: "Colombia", lat: 6.2442, lng: -75.5812, mensaje: "Un guayacán para el parque del barrio.", fotoUrl: "", publicar: "SI", origen: "demo" },
-        { id: "ARB-00002", fecha: hace(8), nombre: "Ejemplo · Buenos Aires", documento: "2000", ciudad: "Buenos Aires", pais: "Argentina", lat: -34.6037, lng: -58.3816, mensaje: "Sembramos un jacarandá con mi familia.", fotoUrl: "", publicar: "SI", origen: "demo" },
-        { id: "ARB-00003", fecha: hace(3), nombre: "Ejemplo · Caracas", documento: "3000", ciudad: "Caracas", pais: "Venezuela", lat: 10.4806, lng: -66.9036, mensaje: "Mi primer árbol: un apamate.", fotoUrl: "", publicar: "SI", origen: "demo" }
+        { id: "ARB-00001", fecha: hace(10), nombre: "Ejemplo · Medellín", documento: "1000", especie: "Guayacán", ciudad: "Medellín", pais: "Colombia", lat: 6.2442, lng: -75.5812, mensaje: "Un guayacán para el parque del barrio.", fotoUrl: "", publicar: "SI", origen: "demo" },
+        { id: "ARB-00002", fecha: hace(8), nombre: "Ejemplo · Buenos Aires", documento: "2000", especie: "Jacarandá", ciudad: "Buenos Aires", pais: "Argentina", lat: -34.6037, lng: -58.3816, mensaje: "Sembramos un jacarandá con mi familia.", fotoUrl: "", publicar: "SI", origen: "demo" },
+        { id: "ARB-00003", fecha: hace(3), nombre: "Ejemplo · Caracas", documento: "3000", especie: "Apamate", ciudad: "Caracas", pais: "Venezuela", lat: 10.4806, lng: -66.9036, mensaje: "Mi primer árbol: un apamate.", fotoUrl: "", publicar: "SI", origen: "demo" }
       ],
       subidas: {}
     };

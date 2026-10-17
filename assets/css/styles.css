@@ -396,6 +396,7 @@ main { flex: 1; }
 .arbol__cuerpo { padding: 12px; display: grid; gap: 4px; }
 .arbol__cuerpo strong { font-family: var(--fuente-titulo); font-size: 0.92rem; color: var(--verde-900); }
 .arbol__lugar { font-size: 0.8rem; color: var(--texto-suave); }
+.arbol__especie { font-size: 0.82rem; color: var(--verde-700); font-weight: 700; }
 .arbol__mensaje { font-size: 0.86rem; margin: 0; }
 .mapa { height: 380px; border-radius: var(--radio); overflow: hidden; border: 1px solid var(--borde); background: var(--verde-100); z-index: 0; }
 .contador { display: flex; flex-wrap: wrap; gap: 14px; }

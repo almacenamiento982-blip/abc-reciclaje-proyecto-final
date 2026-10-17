@@ -1,11 +1,11 @@
-/* Muro y mapa de árboles sembrados + registro de un árbol nuevo. */
+/* Mapa del mundo y fotos de los árboles sembrados + registro de un árbol nuevo. */
 (function () {
   "use strict";
   const C = window.ABC_CONFIG;
   const $ = s => document.querySelector(s);
   const form = $("#form-arbol");
   const campos = {
-    nombre: $("#a-nombre"), documento: $("#a-documento"), ciudad: $("#a-ciudad"), pais: $("#a-pais"),
+    nombre: $("#a-nombre"), documento: $("#a-documento"), especie: $("#a-especie"), ciudad: $("#a-ciudad"), pais: $("#a-pais"),
     mensaje: $("#a-mensaje"), foto: $("#a-foto"), autoriza: $("#a-autoriza")
   };
   let fotoComprimida = null;
@@ -61,6 +61,7 @@
           <img class="arbol__foto" src="${UI.escapar(fotoSrc(a))}" alt="Árbol sembrado por ${UI.escapar(a.nombre)}" loading="lazy">
           <div class="arbol__cuerpo">
             <strong>${UI.escapar(a.nombre)}</strong>
+            ${a.especie ? `<span class="arbol__especie">🌱 ${UI.escapar(a.especie)}</span>` : ""}
             <span class="arbol__lugar">📍 ${UI.escapar([a.ciudad, a.pais].filter(Boolean).join(", "))} · ${UI.escapar(UI.formatoFecha(a.fecha).split(" · ")[0])}</span>
             ${a.mensaje ? `<p class="arbol__mensaje">${UI.escapar(a.mensaje)}</p>` : ""}
           </div>
@@ -75,7 +76,7 @@
       if (!c) return;
       puntos.push([c[0], c[1]]);
       L.marker([c[0], c[1]], { icon: iconoArbol() })
-        .bindPopup(`<strong>${UI.escapar(a.nombre)}</strong><br>${UI.escapar([a.ciudad, a.pais].filter(Boolean).join(", "))}${c[2] ? "" : " (ubicación aproximada)"}${a.fotoUrl ? `<br><img src="${UI.escapar(a.fotoUrl)}" alt="" style="width:160px;margin-top:6px;border-radius:8px">` : ""}`)
+        .bindPopup(`<strong>${UI.escapar(a.nombre)}</strong><br>${a.especie ? "🌱 " + UI.escapar(a.especie) + "<br>" : ""}${UI.escapar([a.ciudad, a.pais].filter(Boolean).join(", "))}${c[2] ? "" : " (ubicación aproximada)"}${a.fotoUrl ? `<br><img src="${UI.escapar(a.fotoUrl)}" alt="" style="width:160px;margin-top:6px;border-radius:8px">` : ""}`)
         .addTo(capaMarcadores);
     });
     if (puntos.length) mapa.fitBounds(puntos, { padding: [30, 30], maxZoom: 6 });
@@ -86,7 +87,7 @@
       const r = await window.Api.arboles.listar();
       pintar(r.arboles || []);
     } catch (err) {
-      $("#galeria").innerHTML = `<div class="aviso aviso--error"><span class="aviso__icono">⚠️</span><div><p>No se pudo cargar el muro. ${UI.escapar(err.message)}</p></div></div>`;
+      $("#galeria").innerHTML = `<div class="aviso aviso--error"><span class="aviso__icono">⚠️</span><div><p>No se pudieron cargar los árboles. ${UI.escapar(err.message)}</p></div></div>`;
       iniciarMapa();
     }
   }
@@ -122,6 +123,7 @@
     let ok = true;
     ok = v.minimo(campos.nombre, 3, "El nombre") && ok;
     ok = v.documento(campos.documento) && ok;
+    ok = v.minimo(campos.especie, 2, "El nombre de la planta o especie") && ok;
     ok = v.minimo(campos.ciudad, 2, "La ciudad") && ok;
     ok = v.requerido(campos.pais, "El país") && ok;
     const errorFoto = campos.foto.closest(".campo").querySelector(".error");
@@ -134,11 +136,11 @@
     const res = $("#arbol-resultado"); res.innerHTML = "";
     try {
       const meta = {
-        nombre: campos.nombre.value.trim(), documento: campos.documento.value.trim(), ciudad: campos.ciudad.value.trim(),
+        nombre: campos.nombre.value.trim(), documento: campos.documento.value.trim(), especie: campos.especie.value.trim(), ciudad: campos.ciudad.value.trim(),
         pais: campos.pais.value, mensaje: campos.mensaje.value.trim(), lat: coords ? coords.lat : "", lng: coords ? coords.lng : "", autoriza: "SI"
       };
       const r = await window.Api.arboles.registrar({ meta, foto: { nombre: fotoComprimida.nombre, tipo: fotoComprimida.tipo, tamano: fotoComprimida.tamano, datos: fotoComprimida.datos } });
-      res.innerHTML = `<div class="aviso aviso--exito"><span class="aviso__icono">🌳</span><div><p><strong>¡Tu árbol ya está en el muro!</strong> Registro ${UI.escapar(r.id)}.</p>${modo === "demo" ? "<p>Modo demostración: se guardó solo en este navegador.</p>" : ""}</div></div>`;
+      res.innerHTML = `<div class="aviso aviso--exito"><span class="aviso__icono">🌳</span><div><p><strong>¡Tu árbol ya está en el mapa del mundo!</strong> Registro ${UI.escapar(r.id)}.</p>${modo === "demo" ? "<p>Modo demostración: se guardó solo en este navegador.</p>" : ""}</div></div>`;
       UI.toast("Árbol publicado", "exito");
       form.reset(); fotoComprimida = null; coords = null; $("#foto-previa").hidden = true; $("#ubicacion-texto").textContent = "Si no la compartes, ubicaremos tu árbol por país.";
       await cargar();
@@ -146,7 +148,7 @@
     } catch (err) {
       res.innerHTML = `<div class="aviso aviso--error"><span class="aviso__icono">⚠️</span><div><p><strong>No se pudo publicar.</strong> ${UI.escapar(err.message)}</p><p>Tus datos siguen en el formulario; inténtalo de nuevo.</p></div></div>`;
     } finally {
-      btn.disabled = false; btn.textContent = "Publicar en el muro";
+      btn.disabled = false; btn.textContent = "Publicar mi árbol";
     }
   });
 })();

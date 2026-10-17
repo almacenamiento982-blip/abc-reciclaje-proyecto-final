@@ -1,4 +1,4 @@
-/* Panel docente: listado, filtros, calificación y moderación del muro. */
+/* Panel docente: listado, filtros, calificación y moderación del mapa de árboles. */
 (function () {
   "use strict";
   const C = window.ABC_CONFIG;
@@ -164,7 +164,7 @@
       <tr>
         <td data-etiqueta="ID"><span>${UI.escapar(a.id)}<br><small class="texto-suave">${UI.escapar(UI.formatoFecha(a.fecha))}</small></span></td>
         <td data-etiqueta="Nombre"><span>${UI.escapar(a.nombre)}<br><small class="texto-suave">Doc. ${UI.escapar(a.documento || "")}</small></span></td>
-        <td data-etiqueta="Lugar">${UI.escapar([a.ciudad, a.pais].filter(Boolean).join(", "))}</td>
+        <td data-etiqueta="Especie · Lugar"><span>${a.especie ? "🌱 " + UI.escapar(a.especie) + "<br>" : ""}<small class="texto-suave">${UI.escapar([a.ciudad, a.pais].filter(Boolean).join(", "))}</small></span></td>
         <td data-etiqueta="Mensaje"><span>${UI.escapar(a.mensaje || "")}${a.fotoUrl ? ` <a href="${UI.escapar(a.fotoUrl)}" target="_blank" rel="noopener">foto ↗</a>` : ""}</span></td>
         <td data-etiqueta="Visible"><span class="estado ${a.publicar === "NO" ? "estado--devuelto" : "estado--calificado"}">${a.publicar === "NO" ? "Oculto" : "Visible"}</span></td>
         <td><div class="acciones" style="gap:6px;flex-wrap:nowrap"><button type="button" class="btn btn--secundario btn--pequeno" data-arbol="${UI.escapar(a.id)}" data-publicar="${a.publicar === "NO" ? "1" : "0"}">${a.publicar === "NO" ? "Mostrar" : "Ocultar"}</button><button type="button" class="btn btn--peligro btn--pequeno" data-eliminar-arbol="${UI.escapar(a.id)}">Eliminar</button></div></td>
@@ -183,7 +183,7 @@
       try {
         await window.Api.docentes.publicarArbol({ clave, id: b.dataset.arbol, publicar: b.dataset.publicar === "1" });
         const a = arboles.find(x => x.id === b.dataset.arbol); if (a) a.publicar = b.dataset.publicar === "1" ? "SI" : "NO";
-        pintarArboles(); UI.toast("Muro actualizado", "exito");
+        pintarArboles(); UI.toast("Mapa actualizado", "exito");
       } catch (err) { UI.toast(err.message, "error"); b.disabled = false; }
     }));
   }
