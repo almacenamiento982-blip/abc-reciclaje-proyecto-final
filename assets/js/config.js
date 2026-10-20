@@ -56,7 +56,7 @@ window.ABC_CONFIG = {
     { nombre: "Zona Sur y Llanos", pais: "Colombia", grupos: [
       "Miércoles 9:00am-10:30am (G-4246)", "Sábado 8:00am-9:30am (G-4248)", "Jueves 21:00pm-22:30pm (G-4873)"] },
     { nombre: "Zona de Antioquia y Eje Cafetero", pais: "Colombia", grupos: [
-      "Sábado 8:30-10:00am (G-5103)", "Viernes 3:00-4:30pm (G-4739)"] },
+      "Sábado 9:30-11:00am (G-5103)", "Viernes 3:00-4:30pm (G-4739)"] },
     { nombre: "Zona de Bogotá y Cundinamarca", pais: "Colombia", grupos: [
       "Lunes 10:00-11:30am (G-4848)", "Martes 7:00-8:30pm (G-4849)", "Sábado 8:00-9:30am (G-4850)",
       "Sábado 9:00-10:30am (G-4851)", "Viernes 3:00-4:30pm (G-4911)"] },
