@@ -26,7 +26,7 @@ var CONFIG = {
   FOTO_MAX_BYTES: 12 * 1024 * 1024,
   NOTA_MIN: 0,
   NOTA_MAX: 5,
-  VERSION: '0.3.2'
+  VERSION: '0.3.3'
 };
 
 var COL_ENTREGAS = ['Radicado', 'Fecha envio', 'Nombre completo', 'Documento', 'Correo', 'WhatsApp', 'Pais', 'Zona / Sede',
@@ -81,6 +81,7 @@ function doPost(e) {
       case 'eliminar': return json_(eliminarEntrega_(datos));
       case 'eliminar_arbol': return json_(eliminarArbol_(datos));
       case 'cambiar_clave': return json_(cambiarClave_(datos));
+      case 'geocodificar_arboles': return json_(geocodificarArboles_(datos));
       default: return json_({ ok: false, error: 'Acción no reconocida: ' + datos.action });
     }
   } catch (err) {
@@ -361,8 +362,64 @@ function registrarArbol_(d) {
   fila[A.CIUDAD] = meta.ciudad; fila[A.PAIS] = meta.pais; fila[A.LAT] = meta.lat; fila[A.LNG] = meta.lng; fila[A.MENSAJE] = meta.mensaje;
   fila[A.FOTO_ID] = archivo.getId(); fila[A.FOTO_URL] = fotoUrl; fila[A.PUBLICAR] = 'SI'; fila[A.ORIGEN] = 'web';
   fila[A.ESPECIE] = meta.especie;
+  if (meta.lat === '' || meta.lng === '') {
+    var punto = geocodificar_(meta.ciudad, meta.pais);
+    if (punto) { fila[A.LAT] = punto.lat; fila[A.LNG] = punto.lng; }
+  }
   hojaArboles_().appendRow(fila);
   return { ok: true, id: id, fotoUrl: fotoUrl };
+}
+
+/**
+ * Ubica en el mapa la ciudad escrita por el estudiante (servicio Maps de Apps
+ * Script, sin clave). Solo acepta resultados del país indicado. Devuelve
+ * { lat, lng, direccion } o null si no la encuentra.
+ */
+function geocodificar_(ciudad, pais) {
+  var consulta = String(ciudad || '').replace(/[.;]+/g, ', ').replace(/\s+/g, ' ').trim();
+  if (!consulta) return null;
+  var paisNorm = normalizarTexto_(pais);
+  if (pais && paisNorm !== 'otro') consulta += ', ' + pais;
+  var cache = CacheService.getScriptCache();
+  var claveCache = 'geo_' + Utilities.base64EncodeWebSafe(normalizarTexto_(consulta)).slice(0, 200);
+  var guardado = cache.get(claveCache);
+  if (guardado) return guardado === 'null' ? null : JSON.parse(guardado);
+  var punto = null;
+  try {
+    var r = Maps.newGeocoder().setLanguage('es').geocode(consulta);
+    var resultados = (r && r.status === 'OK' && r.results) || [];
+    for (var i = 0; i < resultados.length && !punto; i++) {
+      var res = resultados[i];
+      var paisRes = (res.address_components || []).filter(function (c) { return c.types.indexOf('country') >= 0; })[0];
+      if (paisNorm && paisNorm !== 'otro' && paisRes && normalizarTexto_(paisRes.long_name) !== paisNorm) continue;
+      punto = { lat: res.geometry.location.lat, lng: res.geometry.location.lng, direccion: res.formatted_address };
+    }
+  } catch (err) {
+    console.warn('No se pudo geocodificar "' + consulta + '": ' + err);
+    return null;
+  }
+  cache.put(claveCache, JSON.stringify(punto), 21600);
+  return punto;
+}
+
+function normalizarTexto_(v) {
+  return String(v || '').normalize('NFD').replace(/[^\x00-\x7f]/g, '').trim().toLowerCase();
+}
+
+/** Ubica los árboles ya registrados que no tienen coordenadas (protegido con la clave del panel). */
+function geocodificarArboles_(d) {
+  verificarClave_(d.clave);
+  var hoja = hojaArboles_();
+  var filas = hoja.getDataRange().getValues();
+  var resultado = [];
+  for (var i = 1; i < filas.length; i++) {
+    var f = filas[i];
+    if (!f[A.ID] || (f[A.LAT] !== '' && f[A.LNG] !== '')) continue;
+    var punto = geocodificar_(f[A.CIUDAD], f[A.PAIS]);
+    if (punto) hoja.getRange(i + 1, A.LAT + 1, 1, 2).setValues([[punto.lat, punto.lng]]);
+    resultado.push({ id: f[A.ID], ciudad: f[A.CIUDAD], pais: f[A.PAIS], encontrado: punto ? punto.direccion : '' });
+  }
+  return { ok: true, arboles: resultado };
 }
 
 /* =========================================================================

@@ -44,6 +44,16 @@
     return null;
   }
 
+  // Varios árboles de la misma ciudad comparten coordenadas: se reparten en
+  // espiral (unos kilómetros) para que no queden uno encima del otro.
+  function separarRepetidos(c, usados) {
+    const clave = c[0].toFixed(3) + "," + c[1].toFixed(3);
+    const n = usados[clave] = (usados[clave] || 0) + 1;
+    if (n === 1) return c;
+    const angulo = n * 2.4, radio = 0.04 * Math.sqrt(n - 1);
+    return [c[0] + radio * Math.sin(angulo), c[1] + radio * Math.cos(angulo), c[2]];
+  }
+
   function fotoSrc(a) {
     return a.fotoUrl || "data:image/svg+xml;utf8," + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300"><rect width="400" height="300" fill="#e4f2dd"/><text x="200" y="170" font-size="90" text-anchor="middle">🌱</text></svg>');
   }
@@ -70,10 +80,11 @@
     iniciarMapa();
     if (!mapa) return;
     capaMarcadores.clearLayers();
-    const puntos = [];
+    const puntos = [], usados = {};
     arboles.forEach(a => {
-      const c = coordenadasDe(a);
+      let c = coordenadasDe(a);
       if (!c) return;
+      c = separarRepetidos(c, usados);
       puntos.push([c[0], c[1]]);
       L.marker([c[0], c[1]], { icon: iconoArbol() })
         .bindPopup(`<strong>${UI.escapar(a.nombre)}</strong><br>${a.especie ? "🌱 " + UI.escapar(a.especie) + "<br>" : ""}${UI.escapar([a.ciudad, a.pais].filter(Boolean).join(", "))}${c[2] ? "" : " (ubicación aproximada)"}${a.fotoUrl ? `<br><img src="${UI.escapar(a.fotoUrl)}" alt="" style="width:160px;margin-top:6px;border-radius:8px">` : ""}`)
